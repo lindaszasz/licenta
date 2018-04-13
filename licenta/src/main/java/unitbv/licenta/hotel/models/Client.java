@@ -26,7 +26,7 @@ public class Client {
 	@Column
 	private String email;
 
-	@Column
+	
 	@OneToMany(mappedBy = "client")
 	private List<Accomodation> bookings;
 

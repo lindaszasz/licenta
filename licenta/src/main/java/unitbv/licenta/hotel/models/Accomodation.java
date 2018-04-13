@@ -11,12 +11,12 @@ public class Accomodation {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
-	@Column
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "client_id")
 	private Client client;
 
-	@Column
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "room_id")
 	private Room room;
 
 	@Column
