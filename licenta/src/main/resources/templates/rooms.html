@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:replace="fragments/head :: head('Rooms')"></div>
+
+<body>
+
+<div th:replace="fragments/header :: header('r')"></div>
+
+<main role="main" class="container">
+    <div th:replace="fragments/title :: title('List of rooms', '/rooms', 'roomType')"></div>
+
+    <div class="row">
+        <table class="responsive-table">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Room type</th>
+                <th>No. of Adults</th>
+                <th>No. of Children's</th>
+                <th>Price/Night</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="room : ${rooms}">
+                <td th:text="${room.id}"></td>
+                <td th:text="${room.roomType}"></td>
+                <td th:text="${room.nrAdults}"></td>
+                <td th:text="${room.nrChildrens}"></td>
+                <td th:text="${room.priceNight}"></td>
+                <td>
+                    <a th:href="'/rooms/show?id=' + ${room.id}" class="btn-floating btn-small waves-effect waves-light amber darken-3">
+                        <i class="material-icons left">mode_edit</i>Edit
+                    </a>
+                    <a th:href="'/rooms/delete?id=' + ${room.id}" class="btn-floating btn-small waves-effect waves-light red darken-4">
+                        <i class="material-icons left">delete</i>Delete
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="row">
+        <a th:href="'/rooms/show'" class="waves-effect waves-light btn green">
+            <i class="material-icons left">add_circle</i>New room
+        </a>
+    </div>
+</main>
+
+<div th:replace="fragments/footer :: footer"></div>
+
+</body>
+</html>

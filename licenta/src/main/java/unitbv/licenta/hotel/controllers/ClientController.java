@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import unitbv.licenta.hotel.models.Client;
@@ -16,6 +17,25 @@ public class ClientController {
 
 	@Autowired
 	private ClientRepository clientRepository;
+
+	@RequestMapping
+	public ModelAndView getClients(@RequestParam(required = false) String name) {
+		Iterable<Client> clients;
+		if (name != null && name != "") {
+			name = name.trim();
+			clients = clientRepository.getByLastNameOrFirstName(name, name);
+		} else {
+			clients = clientRepository.findAll();
+		}
+
+		return new ModelAndView("clients", "clients", clients);
+	}
+
+	@RequestMapping(path = "show", method = RequestMethod.GET)
+	public ModelAndView getClient(@RequestParam(value = "id", required = false) Long id) {
+		Client client = id != null ? clientRepository.findOne(id) : new Client();
+		return new ModelAndView("client", "client", client);
+	}
 
 	@RequestMapping(path = "/add", method = RequestMethod.GET)
 	public String addClient(@RequestParam(value = "firstName", defaultValue = "test") String firstName,
@@ -31,8 +51,8 @@ public class ClientController {
 		client.setEmail(email);
 
 		clientRepository.save(client);
-		return "Client was saved";
-		// return "redirect:/clients";
+		return "redirect:/clients";
+		// return "Client was saved";
 	}
 
 	@RequestMapping(path = "/update", method = RequestMethod.GET)
@@ -49,16 +69,16 @@ public class ClientController {
 		client.setEmail(email);
 
 		clientRepository.save(client);
-		return "Client was updated";
-		// return "redirect:/clients";
+		return "redirect:/clients";
+		// return "Client was updated";
 
 	}
 
 	@RequestMapping(path = "/delete", method = RequestMethod.GET)
 	public String deleteClient(@RequestParam(value = "id") long id) {
 		clientRepository.delete(id);
-		return "Client was deleted";
-		// return "redirect:/clients";
+		return "redirect:/clients";
+		// return "Client was deleted";
 	}
 
 }

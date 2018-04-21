@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:replace="fragments/head :: head('Accommodation')"></div>
+
+<body>
+
+<div th:replace="fragments/header :: header('a')"></div>
+
+<main role="main" class="container">
+    <div th:replace="fragments/title :: title('Accommodation', '', '')"></div>
+
+    <div class="row">
+        <form class="col s12" th:action="${accomodation.id == null ? '/accomodations/add' : '/accomodations/update'} " method="get">
+            <div class="row">
+                <div class="input-field col s12">
+                    <label for="inputId">ID</label>
+                    <input name="id" type="text" id="inputId" th:value="${accomodation.id}" readonly="readonly"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12">
+                    <div class="input-field">
+                        <select th:field="${accomodation.client.id}" id="client.id">
+                            <option th:each="client : ${clients}" th:value="${client.id}" th:text="${client.firstName + ' ' + client.lastName}"></option>
+                        </select>
+                        <label for="client.id">Client</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12">
+                    <div class="input-field">
+                        <select th:field="${accomodation.room.id}" id="room.id">
+                            <option th:each="room : ${rooms}" th:value="${room.id}" th:text="${room.roomType + ' ' + room.priceNight}"></option>
+                        </select>
+                        <label for="room.id">Room</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <label for="checkIn">Check in</label>
+                    <input name="checkIn" type="text" class="datepicker" id="checkIn" placeholder="Date" th:value="${accomodation.checkIn}"/>
+                </div>
+                 <div class="input-field col s12">
+                    <label for="checkOut">Check out</label>
+                    <input name="checkOut" type="text" class="datepicker" id="checkOut" placeholder="Date" th:value="${accomodation.checkOut}"/>
+                </div>
+            </div>
+			<div class="row">
+				<div class="input-field col s12">
+					<label for="nrAdults">No. of Adults</label> 
+					<input name="nrAdults" type="text" id="nrAdults" placeholder="No. of Adults" th:value="${accomodation.nrAdults}" />
+				</div>
+				<div class="input-field col s12">
+					<label for="nrChildrens">No. of Children's</label> 
+					<input name="nrChildrens" type="text" id="nrChildrens" placeholder="No. of Childrens" th:value="${accomodation.nrChildrens}" />
+				</div>
+			</div>
+		    <div class="row">
+                <div class="input-field col s12">
+                   <label for="priceAccomodation">Price Accommodation</label>
+                   <input name="priceAccomodation" type="text" id="priceAccomodation" placeholder="Price Accommodation" th:value="${accomodation.priceAccomodation}"/>
+                </div>
+            </div>
+			<div class="row">
+                <div class="col s12">
+                    <button type="submit" class="btn"><i class="material-icons left">save</i>Save</button>
+                    <a href="/accomodations" class="btn grey"><i class="material-icons left">cancel</i>Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</main>
+
+<div th:replace="fragments/footer :: footer"></div>
+
+</body>
+</html>

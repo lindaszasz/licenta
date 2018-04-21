@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+<header th:fragment="header (active)">
+    <nav class="indigo accent-2" role="navigation">
+        <div class="nav-wrapper container">
+            <a id="logo-container" href="/" class="brand-logo">
+                <i class="fa fa-pagelines"></i>Four Seasons Hotel
+            </a>
+
+            <!-- Web menu -->
+            <ul class="right hide-on-med-and-down">
+                <li th:class="${active == 'r' ? 'active' : ''}"><a href="/rooms">Rooms</a></li>
+                <li th:class="${active == 'a' ? 'active' : ''}"><a href="/accomodations">Accommodations</a></li>
+                <li th:class="${active == 'c' ? 'active' : ''}"><a href="/clients">Clients</a></li>
+            </ul>
+
+            <!-- Mobile menu -->
+            <ul id="nav-mobile" class="side-nav" style="transform: translateX(-100%);">
+                <li th:class="${active == 'r' ? 'active' : ''}"><a href="/rooms">Rooms</a></li>
+                <li th:class="${active == 'a' ? 'active' : ''}"><a href="/accomodations">Accommodations</a></li>
+                <li th:class="${active == 'c' ? 'active' : ''}"><a href="/clients">Clients</a></li>
+            </ul>
+
+            <a href="#" data-activates="nav-mobile" class="button-collapse">
+                <i class="material-icons">menu</i>
+            </a>
+        </div>
+    </nav>
+</header>
+</body>
+
+</html>

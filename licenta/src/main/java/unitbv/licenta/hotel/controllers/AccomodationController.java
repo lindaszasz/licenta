@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import unitbv.licenta.hotel.models.Accomodation;
 import unitbv.licenta.hotel.models.Client;
@@ -26,6 +27,29 @@ public class AccomodationController {
 	@Autowired
 	private RoomRepository roomRepository;
 
+	@RequestMapping
+	public ModelAndView getAccomodations(@RequestParam(required = false) Long id) {
+
+		Iterable<Accomodation> accomodations;
+		if (id != null) {
+			accomodations = accomodationRepository.getByClient(id);
+		} else {
+			accomodations = accomodationRepository.findAll();
+		}
+		return new ModelAndView("accomodations", "accomodations", accomodations);
+	}
+
+	@RequestMapping(path = "/show")
+	public ModelAndView getAccomodation(@RequestParam(value = "id", required = false) Long id) {
+		Accomodation accomodation = id != null ? accomodationRepository.findOne(id) : new Accomodation();
+
+		ModelAndView modelAndView = new ModelAndView("accomodation");
+		modelAndView.addObject("accomodation", accomodation);
+		modelAndView.addObject("clients", clientRepository.findAll());
+		modelAndView.addObject("rooms", roomRepository.findAll());
+		return modelAndView;
+	}
+
 	@RequestMapping(path = "/add", method = RequestMethod.GET)
 	public String addAccomodation(@RequestParam(value = "client.id") long idClient,
 			@RequestParam(value = "room.id") long idRoom, @RequestParam(value = "checkIn") String checkIn,
@@ -46,8 +70,9 @@ public class AccomodationController {
 		accomodation.setPriceAccomodation(priceAccomodation);
 
 		accomodationRepository.save(accomodation);
-		return "Reservation was saved";
-		// return "redirect:/accomodations";
+		return "redirect:/accomodations";
+		// return "Reservation was saved";
+
 	}
 
 	@RequestMapping(path = "/update", method = RequestMethod.GET)
@@ -70,17 +95,17 @@ public class AccomodationController {
 		accomodation.setPriceAccomodation(priceAccomodation);
 
 		accomodationRepository.save(accomodation);
-		return "Reservation was updated";
-
-		// return "redirect:/accomodations";
+		return "redirect:/accomodations";
+		// return "Reservation was updated";
 
 	}
 
 	@RequestMapping(path = "/delete", method = RequestMethod.GET)
 	public String deleteAccomodation(@RequestParam(value = "id") long id) {
 		accomodationRepository.delete(id);
-		return "Reservation was deleted";
-		// return "redirect:/accomodations";
+		return "redirect:/accomodations";
+		// return "Reservation was deleted";
+
 	}
 
 }

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:replace="fragments/head :: head('Room')"></div>
+
+<body>
+
+<div th:replace="fragments/header :: header('r')"></div>
+
+<main role="main" class="container">
+    <div th:replace="fragments/title :: title('Room', '', '')"></div>
+
+    <div class="row"></div>
+    <form class="col s12" th:action="${room.id == 0 ? '/rooms/add' : '/rooms/update'} " method="get">
+        <div class="row">
+            <div class="input-field col s12">
+                <label for="inputId">ID</label>
+                <input name="id" type="text" id="inputId" th:value="${room.id}" readonly="readonly"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">          
+                <i class="fa fa-bed prefix" style="font-size:25px;"></i>                
+                <label for="roomType">Room type</label>
+                <input name="roomType" type="text" id="roomType" placeholder="Room Type" th:value="${room.roomType}"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+                <i class="fa fa-male prefix" style="font-size:30px;"></i>
+                <label for="nrAdults">No. of Adults</label>
+                <input name="nrAdults" type="text" id="nrAdults" placeholder="No. of Adults" th:value="${room.nrAdults}"/>
+            </div>
+            <div class="input-field col s12">
+                <i class="fa fa-child prefix" style="font-size:30px;"></i>
+                <label for="nrChildrens">No. of Children's</label>
+                <input name="nrChildrens" type="text" id="nrChildrens" placeholder="No. of Childrens" th:value="${room.nrChildrens}"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+                <i class="material-icons prefix">monetization_on</i>
+                <label for="priceNight">Price/Night</label>
+                <input name="priceNight" type="text" id="priceNight" placeholder="Price/Night" th:value="${room.priceNight}"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12">
+                <button type="submit" class="btn"><i class="material-icons left">save</i>Save</button>
+                <a href="/rooms" class="btn grey"><i class="material-icons left">cancel</i>Cancel</a>
+            </div>
+        </div>
+    </form>
+</main>
+
+<div th:replace="fragments/footer :: footer"></div>
+
+</body>
+</html>
