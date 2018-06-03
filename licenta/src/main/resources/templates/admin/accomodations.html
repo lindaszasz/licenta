@@ -5,10 +5,10 @@
 
 <body>
 
-<div th:replace="fragments/header :: header('a')"></div>
+<div th:replace="admin/headerAdmin :: header('a')"></div>
 
 <main role="main" class="container">
-    <div th:replace="fragments/title :: title('List of accommodations', '/accomodations', 'client.id')"></div>
+    <div th:replace="fragments/title :: title('List of accommodations', '/accomodations', 'user.id')"></div>
 
     <div class="row">
         <table class="responsive-table">
@@ -27,7 +27,7 @@
             <tbody>
             <tr th:each="accomodation : ${accomodations}">
                 <td th:text="${accomodation.id}"></td>
-                <td th:text="${accomodation.client.firstName + ' ' + accomodation.client.lastName}"></td>
+                <td th:text="${accomodation.user.firstName + ' ' + accomodation.user.lastName}"></td>
                 <td th:text="${accomodation.room.roomType + ' ' + accomodation.room.priceNight}"></td>
                 <td th:text="${accomodation.checkIn}"></td>
                 <td th:text="${accomodation.checkOut}"></td>

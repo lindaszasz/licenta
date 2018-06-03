@@ -26,13 +26,14 @@ public class RoomController {
 		} else {
 			rooms = roomRepository.findAll();
 		}
-		return new ModelAndView("rooms", "rooms", rooms);
+		return new ModelAndView("admin/rooms", "rooms", rooms);
 	}
 
 	@RequestMapping(path = "show", method = RequestMethod.GET)
 	public ModelAndView getRoom(@RequestParam(value = "id", required = false) Long id) {
 		Room room = id != null ? roomRepository.findOne(id) : new Room();
-		return new ModelAndView("room", "room", room);
+		System.out.println(room.getId());
+		return new ModelAndView("admin/room", "room", room);
 	}
 
 	@RequestMapping(path = "/add", method = RequestMethod.GET)

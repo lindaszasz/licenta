@@ -17,15 +17,17 @@
 
             <!-- Web menu -->
             <ul class="right hide-on-med-and-down">
-                <li th:class="${active == 'r' ? 'active' : ''}"><a href="/roomsDescription">Rooms</a></li>
-                <li th:class="${active == 's' ? 'active' : ''}"><a href="/services">Services</a></li>
+                <li th:class="${active == 'r' ? 'active' : ''}"><a href="/rooms">Rooms</a></li>
+                <li th:class="${active == 'a' ? 'active' : ''}"><a href="/accomodations">Accommodations</a></li>
+                <li th:class="${active == 'c' ? 'active' : ''}"><a href="/clients">Clients</a></li>
                 <li><a class="dropdown-trigger" href="#!" data-activates="dropdown1"><i class="material-icons">account_circle</i></a></li>
             </ul>
 
             <!-- Mobile menu -->
             <ul id="nav-mobile" class="side-nav" style="transform: translateX(-100%);">
-                <li th:class="${active == 'r' ? 'active' : ''}"><a href="/roomsDescription">Rooms</a></li>
-                <li th:class="${active == 's' ? 'active' : ''}"><a href="/services">Services</a></li>
+                <li th:class="${active == 'r' ? 'active' : ''}"><a href="/rooms">Rooms</a></li>
+                <li th:class="${active == 'a' ? 'active' : ''}"><a href="/accomodations">Accommodations</a></li>
+                <li th:class="${active == 'c' ? 'active' : ''}"><a href="/clients">Clients</a></li>
             </ul>
 
             <a href="#" data-activates="nav-mobile" class="button-collapse">

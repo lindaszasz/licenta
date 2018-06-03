@@ -5,13 +5,13 @@
 
 <body>
 
-<div th:replace="fragments/header :: header('a')"></div>
+<div th:replace="admin/headerAdmin :: header('a')"></div>
 
 <main role="main" class="container">
     <div th:replace="fragments/title :: title('Accommodation', '', '')"></div>
 
     <div class="row">
-        <form class="col s12" th:action="${accomodation.id == null ? '/accomodations/add' : '/accomodations/update'} " method="get">
+        <form class="col s12" th:action="${accomodation.id == 0 ? '/accomodations/add' : '/accomodations/update'} " method="get">
             <div class="row">
                 <div class="input-field col s12">
                     <label for="inputId">ID</label>
@@ -21,10 +21,10 @@
             <div class="row">
                 <div class="col s12">
                     <div class="input-field">
-                        <select th:field="${accomodation.client.id}" id="client.id">
-                            <option th:each="client : ${clients}" th:value="${client.id}" th:text="${client.firstName + ' ' + client.lastName}"></option>
+                        <select th:field="${accomodation.user.id}" id="user.id">
+                            <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.firstName + ' ' + user.lastName}"></option>
                         </select>
-                        <label for="client.id">Client</label>
+                        <label for="user.id">Client</label>
                     </div>
                 </div>
             </div>

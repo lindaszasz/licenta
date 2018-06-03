@@ -8,12 +8,12 @@ import javax.persistence.*;
 public class Accomodation {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "client_id")
-	private Client client;
+	@JoinColumn(name = "user_id")
+	private User user;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "room_id")
@@ -38,11 +38,11 @@ public class Accomodation {
 
 	}
 
-	public Accomodation(long id, Client client, Room room, String checkIn, String checkOut, int nrAdults,
-			int nrChildrens, double priceAccomodation) {
+	public Accomodation(long id, User user, Room room, String checkIn, String checkOut, int nrAdults, int nrChildrens,
+			double priceAccomodation) {
 		super();
 		this.id = id;
-		this.client = client;
+		this.user = user;
 		this.room = room;
 		this.checkIn = checkIn;
 		this.checkOut = checkOut;
@@ -59,12 +59,12 @@ public class Accomodation {
 		this.id = id;
 	}
 
-	public Client getClient() {
-		return client;
+	public User getUser() {
+		return user;
 	}
 
-	public void setClient(Client client) {
-		this.client = client;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	public Room getRoom() {
@@ -117,9 +117,9 @@ public class Accomodation {
 
 	@Override
 	public String toString() {
-		return "Accomodation [id=" + id + ", client=" + client + ", room=" + room + ", checkIn=" + checkIn
-				+ ", checkOut=" + checkOut + ", nrAdults=" + nrAdults + ", nrChildrens=" + nrChildrens
-				+ ", priceAccomodation=" + priceAccomodation + "]";
+		return "Accomodation [id=" + id + ", user=" + user + ", room=" + room + ", checkIn=" + checkIn + ", checkOut="
+				+ checkOut + ", nrAdults=" + nrAdults + ", nrChildrens=" + nrChildrens + ", priceAccomodation="
+				+ priceAccomodation + "]";
 	}
 
 }

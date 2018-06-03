@@ -5,47 +5,47 @@
 
 <body>
 
-<div th:replace="fragments/header :: header('c')"></div>
+<div th:replace="admin/headerAdmin :: header('c')"></div>
 
 <main role="main" class="container">
     <div th:replace="fragments/title :: title('Client', '', '')"></div>
 
     <div class="row">
-        <form class="col s12" th:action="${client.id == 0 ? '/clients/add' : '/clients/update'}" method="get">
+        <form class="col s12" th:action="${user.id == 0 ? '/clients/add' : '/clients/update'}" method="get">
             <div class="row">
                 <div class="input-field col s12">
                     <label for="inputId">ID</label>
-                    <input name="id" type="text" id="inputId" th:value="${client.id}" readonly="readonly"/>
+                    <input name="id" type="text" id="inputId" th:value="${user.id}" readonly="readonly"/>
                 </div>
             </div>
             <div class="row">
                 <div class="input-field col m6 s12">
                     <i class="material-icons prefix">account_circle</i>
                     <label for="firstName">First Name</label>
-                    <input name="firstName" type="text" id="firstName" placeholder="First Name" th:value="${client.firstName}"/>
+                    <input name="firstName" type="text" id="firstName" placeholder="First Name" th:value="${user.firstName}"/>
                 </div>
                 <div class="input-field col m6 s12">
                     <label for="lastName">Last Name</label>
-                    <input name="lastName" type="text" id="lastName" placeholder="Last Name" th:value="${client.lastName}"/>
+                    <input name="lastName" type="text" id="lastName" placeholder="Last Name" th:value="${user.lastName}"/>
                 </div>
             </div>
             <div class="row">
                 <div class="input-field input-group col m6 s12">
                     <i class="fa fa-id-card prefix" style="font-size:25px;"></i>
                     <label for="cnp">Personal ID Number</label>
-                    <input name="cnp" type="text" id="cnp" placeholder="CNP" th:value="${client.cnp}"/>
+                    <input name="cnp" type="text" id="cnp" placeholder="CNP" th:value="${user.cnp}"/>
                 </div>              
             </div>
             <div class="row">
                 <div class="input-field col s12 m6">
                     <i class="material-icons prefix">phone</i>
                     <label for="phone">Phone</label>
-                    <input name="phone" type="text" id="phone" placeholder="Phone" th:value="${client.phone}"/>
+                    <input name="phone" type="text" id="phone" placeholder="Phone" th:value="${user.phone}"/>
                 </div>
                 <div class="input-field col s12 m6">
                     <i class="material-icons prefix">email</i>
                     <label for="email">Email</label>
-                    <input name="email" type="text" id="email" placeholder="Email" th:value="${client.email}"/>
+                    <input name="email" type="text" id="email" placeholder="Email" th:value="${user.email}"/>
                 </div>
             </div>
             <div class="row">

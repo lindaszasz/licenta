@@ -6,7 +6,7 @@ import unitbv.licenta.hotel.models.Accomodation;
 
 public interface AccomodationRepository extends CrudRepository<Accomodation, Long> {
 	
-	Iterable<Accomodation> getByClient(long id);
+	Iterable<Accomodation> getByUser(long id);
 	
 
 }

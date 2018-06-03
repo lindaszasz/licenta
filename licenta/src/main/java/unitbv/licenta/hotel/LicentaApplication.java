@@ -10,7 +10,7 @@ public class LicentaApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(LicentaApplication.class, args);
-	//	GreedyAlgorithm g = new GreedyAlgorithm();
-	//	g.selectBestOption();
+		GreedyAlgorithm g = new GreedyAlgorithm();
+		g.selectBestOption();
 	}
 }

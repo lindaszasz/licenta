@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import unitbv.licenta.hotel.models.Accomodation;
-import unitbv.licenta.hotel.models.Client;
 import unitbv.licenta.hotel.models.Room;
+import unitbv.licenta.hotel.models.User;
 import unitbv.licenta.hotel.repositories.AccomodationRepository;
-import unitbv.licenta.hotel.repositories.ClientRepository;
 import unitbv.licenta.hotel.repositories.RoomRepository;
+import unitbv.licenta.hotel.repositories.UserRepository;
 
 @Controller
 @RequestMapping("/accomodations")
@@ -22,7 +22,7 @@ public class AccomodationController {
 	private AccomodationRepository accomodationRepository;
 
 	@Autowired
-	private ClientRepository clientRepository;
+	private UserRepository userRepository;
 
 	@Autowired
 	private RoomRepository roomRepository;
@@ -32,36 +32,36 @@ public class AccomodationController {
 
 		Iterable<Accomodation> accomodations;
 		if (id != null) {
-			accomodations = accomodationRepository.getByClient(id);
+			accomodations = accomodationRepository.getByUser(id);
 		} else {
 			accomodations = accomodationRepository.findAll();
 		}
-		return new ModelAndView("accomodations", "accomodations", accomodations);
+		return new ModelAndView("admin/accomodations", "accomodations", accomodations);
 	}
 
 	@RequestMapping(path = "/show")
 	public ModelAndView getAccomodation(@RequestParam(value = "id", required = false) Long id) {
 		Accomodation accomodation = id != null ? accomodationRepository.findOne(id) : new Accomodation();
 
-		ModelAndView modelAndView = new ModelAndView("accomodation");
+		ModelAndView modelAndView = new ModelAndView("admin/accomodation");
 		modelAndView.addObject("accomodation", accomodation);
-		modelAndView.addObject("clients", clientRepository.findAll());
+		modelAndView.addObject("users", userRepository.findAll());
 		modelAndView.addObject("rooms", roomRepository.findAll());
 		return modelAndView;
 	}
 
 	@RequestMapping(path = "/add", method = RequestMethod.GET)
-	public String addAccomodation(@RequestParam(value = "client.id") long idClient,
+	public String addAccomodation(@RequestParam(value = "user.id") long idUser,
 			@RequestParam(value = "room.id") long idRoom, @RequestParam(value = "checkIn") String checkIn,
 			@RequestParam(value = "checkOut") String checkOut, @RequestParam(value = "nrAdults") int nrAdults,
 			@RequestParam(value = "nrChildrens", required = false) int nrChildrens,
 			@RequestParam(value = "priceAccomodation", required = false) double priceAccomodation) {
 
-		Client client = clientRepository.findOne(idClient);
+		User user = userRepository.findOne(idUser);
 		Room room = roomRepository.findOne(idRoom);
 
 		Accomodation accomodation = new Accomodation();
-		accomodation.setClient(client);
+		accomodation.setUser(user);
 		accomodation.setRoom(room);
 		accomodation.setCheckIn(checkIn);
 		accomodation.setCheckOut(checkOut);
@@ -77,16 +77,16 @@ public class AccomodationController {
 
 	@RequestMapping(path = "/update", method = RequestMethod.GET)
 	public String updateAccomodation(@RequestParam(value = "id") long id,
-			@RequestParam(value = "client.id") long idClient, @RequestParam(value = "room.id") long idRoom,
+			@RequestParam(value = "user.id") long idUser, @RequestParam(value = "room.id") long idRoom,
 			@RequestParam(value = "checkIn") String checkIn, @RequestParam(value = "checkOut") String checkOut,
 			@RequestParam(value = "nrAdults") int nrAdults, @RequestParam(value = "nrChildrens") int nrChildrens,
 			@RequestParam(value = "priceAccomodation") double priceAccomodation) {
 
 		Accomodation accomodation = accomodationRepository.findOne(id);
-		Client client = clientRepository.findOne(idClient);
+		User user = userRepository.findOne(idUser);
 		Room room = roomRepository.findOne(idRoom);
 
-		accomodation.setClient(client);
+		accomodation.setUser(user);
 		accomodation.setRoom(room);
 		accomodation.setCheckIn(checkIn);
 		accomodation.setCheckOut(checkOut);
