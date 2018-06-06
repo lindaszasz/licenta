@@ -50,4 +50,9 @@ public class DescriptionController {
 	public String galleryJunior() {
 		return "rooms/juniorGallery";
 	}
+	
+	@RequestMapping("/services")
+	public String infoServices() {
+		return "services";
+	}
 }
