@@ -24,6 +24,9 @@
             flex: 1 0 auto;
         }
         
+        blockquote{
+          border-left: 5px solid #536dfe;
+        }
 
         .parallax-container {
             min-height: 300px;
@@ -57,6 +60,16 @@
         .icon-block .material-icons {
             font-size: inherit;
         }
+        
+        .mininav{ 
+         float:left;
+         width:200px;
+         margin:1px ;
+         background-color: rgba(189, 236, 142, 0.64);
+       }
+       
+           
+        
     </style>
 
     <script>
@@ -82,7 +95,15 @@
 
             $('.parallax').parallax();
             $('.slider').slider();
+            $('.materialboxed').materialbox();
             $(".dropdown-trigger").dropdown({constrainWidth: false });
+            $('.carousel.carousel-slider').carousel({fullWidth: true, padding:200},setTimeout(autoplay, 4500));
+            function autoplay() {
+              $('.carousel').carousel('next');
+              setTimeout(autoplay, 4500);
+               }
+           
+            
         });
         
        

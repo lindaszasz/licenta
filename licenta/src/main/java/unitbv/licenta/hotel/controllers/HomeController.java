@@ -35,6 +35,7 @@ public class HomeController {
 		//modelAndView.addObject("adminMessage","Content Available Only for Users with Admin Role");
 		//modelAndView.setViewName("admin/home");
 		return modelAndView;
+		
 	}
 
 }

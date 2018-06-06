@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:replace="fragments/head :: head('Rooms')"></div>
+
+<body>
+
+	<div th:replace="fragments/header :: header('r')"></div>
+
+	<main role="main" class="container"> <!-- Page Layout here -->
+	<div class="row">
+
+		<div class="col s3">
+			<!-- Note that "m4 l3" was added -->
+
+			<section class="mininav">
+				<h1 style="font-size: 25px" align="center">Junior Suite</h1>
+				<br>
+
+
+				<div class="collection">
+					<a href="/junior" class="collection-item active waves-effect"
+						align="center">Details</a> 
+					<a href="/junior/gallery" class="collection-item waves-effect" 
+					    align="center">Gallery</a> 
+					<a href="#!" class="collection-item waves-effect" align="center">Book now</a> 
+					<a href="/roomsDescription" class="collection-item waves-effect"
+					     align="center">Back</a>
+				</div>
+
+			</section>
+
+		</div>
+
+		<div class="col s9">
+			<!-- Note that "m8 l9" was added -->
+			<h4>Details</h4>
+			<blockquote>
+				<i> Designed to attract travelers seeking personalized care and
+					‘a home away from home’. Their inviting interior layout and
+					decoration give them a unique charm and personality and is the best
+					choice for a long stay or a family getaway. Accommodates up to
+					three guests. The surface is approximately 29 m².</i>
+			</blockquote>
+
+			<h5>Amenities</h5>
+			<div class="row">
+				<div class="col s4 l4">
+					<ul class="browser-default">
+						<li>Accessible</li>
+						<li>Cribs</li>
+						<li>Air Conditioning</li>
+						<li>Internet (Free,<br /> High-Speed, Wireless)
+						</li>
+						<li>TV (LCD)</li>
+					</ul>
+				</div>
+				<div class="col s4 l4">
+					<ul class="browser-default">
+						<li>Bath</li>
+						<li>Hair Dryer</li>
+						<li>Slipper</li>
+						<li>Bathrobes</li>
+						<li>Mirror</li>
+						<li>Shower</li>
+
+					</ul>
+				</div>
+				<div class="col s4 l4">
+					<ul class="browser-default">
+						<li>Electronic Door Lock</li>
+						<li>Minibar</li>
+						<li>Room service</li>
+						<li>Wake-Up Service</li>
+						<li>Balcony</li>
+						<li>View</li>
+
+					</ul>
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+
+	</main>
+
+	<div th:replace="fragments/footer :: footer"></div>
+
+</body>
+</html>

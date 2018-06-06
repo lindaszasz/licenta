@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:replace="fragments/head :: head('Rooms')"></div>
+
+<body>
+
+	<div th:replace="fragments/header :: header('r')"></div>
+
+	<main role="main" class="container">
+    <!-- Page Layout here -->
+    <div class="row">
+
+      <div class="col s3"> <!-- Note that "m4 l3" was added -->
+        <!-- Grey navigation panel -->
+     <section class="mininav">
+              <h1 style="font-size:25px" align="center" >Deluxe</h1><br>
+  
+
+    <div class="collection">
+        <a href="/deluxe" class="collection-item waves-effect" align="center">Details</a>
+        <a href="/deluxe/gallery" class="collection-item active waves-effect" align="center">Gallery</a>
+        <a href="#!" class="collection-item waves-effect" align="center">Book now</a>
+        <a href="/roomsDescription" class="collection-item waves-effect" align="center">Back</a>
+     </div>
+
+    </section>   
+
+      </div>
+
+      <div class="col s9"> <!-- Note that "m8 l9" was added -->
+    
+  <div class="carousel carousel-slider">
+    <a class="carousel-item"><img src="https://www.fourseasons.com/content/dam/fourseasons/images/web/NYF/NYF_1371_aspect16x9.jpg/jcr:content/renditions/cq5dam.web.1280.1280.jpeg"></a>
+    <a class="carousel-item"><img src="https://media-cdn.tripadvisor.com/media/photo-s/0f/14/b0/63/attide-hotel-bathroom.jpg"></a>
+    <a class="carousel-item"><img src="https://s-ec.bstatic.com/images/hotel/max1024x768/988/98870825.jpg"></a>
+    <a class="carousel-item"><img src="https://media-cdn.tripadvisor.com/media/photo-s/09/12/9a/90/four-seasons-hotel-london.jpg"></a>
+ </div>
+    <p></p>
+      <div class = "row">
+        <div class="col s12 m6 l3"><img class="materialboxed" width="160" height="100" src="https://www.fourseasons.com/content/dam/fourseasons/images/web/NYF/NYF_1371_aspect16x9.jpg/jcr:content/renditions/cq5dam.web.1280.1280.jpeg"></div>
+        <div class="col s12 m6 l3"><img class="materialboxed" width="160" height="100" src="https://media-cdn.tripadvisor.com/media/photo-s/0f/14/b0/63/attide-hotel-bathroom.jpg"></div>
+        <div class="col s12 m6 l3"><img class="materialboxed" width="160" height="100" src="https://s-ec.bstatic.com/images/hotel/max1024x768/988/98870825.jpg"></div>
+        <div class="col s12 m6 l3"><img class="materialboxed" width="160" height="100" src="https://media-cdn.tripadvisor.com/media/photo-s/09/12/9a/90/four-seasons-hotel-london.jpg"></div>
+     </div>
+
+    </div>
+    </div>
+	
+    </main>
+
+	<div th:replace="fragments/footer :: footer"></div>
+
+</body>
+</html>

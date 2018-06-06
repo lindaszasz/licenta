@@ -29,6 +29,7 @@ public class UserController {
 		}
 
 		return new ModelAndView("admin/clients", "users", users);	
+		
 	}
 
 	@RequestMapping(path = "show", method = RequestMethod.GET)

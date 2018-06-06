@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:replace="fragments/head :: head('Rooms')"></div>
+
+<body>
+
+	<div th:replace="fragments/header :: header('r')"></div>
+
+	<main role="main" class="container">
+    <!-- Page Layout here -->
+    <div class="row">
+
+      <div class="col s3"> <!-- Note that "m4 l3" was added -->
+        <!-- Grey navigation panel -->
+     <section class="mininav">
+              <h1 style="font-size:25px" align="center" >Golden</h1><br>
+  
+
+    <div class="collection">
+        <a href="/golden" class="collection-item waves-effect" align="center">Details</a>
+        <a href="/golden/gallery" class="collection-item active waves-effect" align="center">Gallery</a>
+        <a href="#!" class="collection-item waves-effect" align="center">Book now</a>
+        <a href="/roomsDescription" class="collection-item waves-effect" align="center">Back</a>
+     </div>
+
+    </section>   
+
+      </div>
+
+      <div class="col s9"> <!-- Note that "m8 l9" was added -->
+        
+  <div class="carousel carousel-slider">
+    <a class="carousel-item"><img src="https://t-ec.bstatic.com/images/hotel/max1024x768/274/27491960.jpg"></a>
+    <a class="carousel-item"><img src="http://www.goldentimehotel.ro/wp-content/uploads/2017/12/g_golden002-1-550x403.jpg"></a>
+    <a class="carousel-item"><img src="http://www.goldentimehotel.ro/wp-content/uploads/2017/12/g_golden004-1-1100x656.jpg"></a>
+    <a class="carousel-item"><img src="https://www.tobook.com/photos/44997_119274_pensiunea-toscana_Brasov.jpg"></a>
+ </div>
+    <p></p>
+      <div class = "row">
+        <div class="col s12 m6 l3"><img class="materialboxed" width="160" height="100" src="https://t-ec.bstatic.com/images/hotel/max1024x768/274/27491960.jpg"></div>
+        <div class="col s12 m6 l3"><img class="materialboxed" width="160" height="100" src="http://www.goldentimehotel.ro/wp-content/uploads/2017/12/g_golden002-1-550x403.jpg"></div>
+        <div class="col s12 m6 l3"><img class="materialboxed" width="160" height="100" src="http://www.goldentimehotel.ro/wp-content/uploads/2017/12/g_golden004-1-1100x656.jpg"></div>
+        <div class="col s12 m6 l3"><img class="materialboxed" width="160" height="100" src="https://www.tobook.com/photos/44997_119274_pensiunea-toscana_Brasov.jpg"></div>
+     </div>
+
+    </div>
+      </div>
+   
+	
+    </main>
+
+	<div th:replace="fragments/footer :: footer"></div>
+
+</body>
+</html>
