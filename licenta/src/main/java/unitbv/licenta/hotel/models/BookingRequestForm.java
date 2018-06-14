@@ -1,10 +1,17 @@
 package unitbv.licenta.hotel.models;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
-public class Accomodation {
-
+public class BookingRequestForm {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
@@ -35,14 +42,14 @@ public class Accomodation {
 
 	@Column
 	private double priceAccomodation;
-
-	public Accomodation() {
-
+	
+	public BookingRequestForm() {
+		
 	}
+	
 
-
-	public Accomodation(long id, User user, Room room, String checkIn, String checkOut, int nrAdults, int nrChildrens,
-			Service service, double priceAccomodation) {
+	public BookingRequestForm(long id, User user, Room room, String checkIn, String checkOut, int nrAdults,
+			int nrChildrens, Service service, double priceAccomodation) {
 		super();
 		this.id = id;
 		this.user = user;
@@ -113,15 +120,17 @@ public class Accomodation {
 		this.nrChildrens = nrChildrens;
 	}
 
-	
+
 	public Service getService() {
 		return service;
 	}
 
 
+
 	public void setService(Service service) {
 		this.service = service;
 	}
+
 
 
 	public double getPriceAccomodation() {
@@ -135,11 +144,11 @@ public class Accomodation {
 
 	@Override
 	public String toString() {
-		return "Accomodation [id=" + id + ", user=" + user + ", room=" + room + ", checkIn=" + checkIn + ", checkOut="
-				+ checkOut + ", nrAdults=" + nrAdults + ", nrChildrens=" + nrChildrens + ", service=" + service
-				+ ", priceAccomodation=" + priceAccomodation + "]";
+		return "BookingRequestForm [id=" + id + ", user=" + user + ", room=" + room + ", checkIn=" + checkIn
+				+ ", checkOut=" + checkOut + ", nrAdults=" + nrAdults + ", nrChildrens=" + nrChildrens + ", service="
+				+ service + ", priceAccomodation=" + priceAccomodation + "]";
 	}
-
-    
+	
+	
 
 }

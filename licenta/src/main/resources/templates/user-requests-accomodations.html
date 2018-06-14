@@ -1,15 +1,56 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<div th:replace="fragments/head :: head('Accomodations')"></div>
+<div th:replace="fragments/head :: head('Your accommodations')"></div>
 
 <body>
 
-<div th:replace="admin/headerAdmin :: header('a')"></div>
+<div th:replace="fragments/header :: header('a')"></div>
 
 <main role="main" class="container">
-    <div th:replace="fragments/title :: title('List of accommodations', '/accomodations', 'user.id')"></div>
 
+    <br/>
+    <h4>Accommodation Requests</h4>
+    <br/>
+    <div class="row">
+        <table class="responsive-table">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Client</th>
+                <th>Room</th>
+                <th>Check In</th>
+                <th>Check Out</th>
+                <th>No. of Adults</th>
+                <th>No. of Children's</th>
+                <th>Service</th>
+                <th>Price Accommodation</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="bookingRequest : ${bookingRequests}">
+                <td th:text="${bookingRequest.id}"></td>
+                <td th:text="${bookingRequest.user.firstName + ' ' + bookingRequest.user.lastName}"></td>
+                <td th:text="${bookingRequest.room.roomType + ' ' + bookingRequest.room.priceNight}"></td>
+                <td th:text="${bookingRequest.checkIn}"></td>
+                <td th:text="${bookingRequest.checkOut}"></td>
+                <td th:text="${bookingRequest.nrAdults}"></td>
+                <td th:text="${bookingRequest.nrChildrens}"></td>
+                <td th:text="${bookingRequest.service}"></td>
+                <td th:text="${bookingRequest.priceAccomodation}"></td>
+                <td>
+                    <a th:href="'/accomodations/show/request?id=' + ${bookingRequest.id}" class="btn-floating btn-small waves-effect waves-light amber darken-3">
+                        <i class="material-icons left">mode_edit</i>Edit
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <br/>
+    <h4>Accommodations</h4>
+    <br/>
     <div class="row">
         <table class="responsive-table">
             <thead>
@@ -48,11 +89,7 @@
             </tbody>
         </table>
     </div>
-    <div class="row">
-        <a th:href="'/accomodations/show'" class="waves-effect waves-light btn green">
-            <i class="material-icons left">add_circle</i>New accommodation
-        </a>
-    </div>
+  
 </main>
 
 <div th:replace="fragments/footer :: footer"></div>

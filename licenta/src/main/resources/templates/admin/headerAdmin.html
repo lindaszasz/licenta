@@ -9,6 +9,11 @@
               <li th:class="divider"></li>
               <li><a th:href="@{/logout}">Sign Out</a></li>
     </ul>
+      <ul id="dropdown2" class="dropdown-content">
+      <li th:class="${active == 'a' ? 'active' : ''}"><a href="/accomodations">Accommodations</a></li>
+      <li><a href="/accomodations/requests">Accommodation Requests</a></li>
+      
+    </ul>
     <nav class="indigo accent-2" role="navigation">
         <div class="nav-wrapper container">  
             <a id="logo-container" href="/home" class="brand-logo">
@@ -18,7 +23,7 @@
             <!-- Web menu -->
             <ul class="right hide-on-med-and-down">
                 <li th:class="${active == 'r' ? 'active' : ''}"><a href="/rooms">Rooms</a></li>
-                <li th:class="${active == 'a' ? 'active' : ''}"><a href="/accomodations">Accommodations</a></li>
+                <li th:class="${active == 'a' ? 'active' : ''}"><a  class="dropdown-trigger" href="/accomodations" data-activates="dropdown2">Accommodations</a></li>
                 <li th:class="${active == 'c' ? 'active' : ''}"><a href="/clients">Clients</a></li>
                 <li><a class="dropdown-trigger" href="#!" data-activates="dropdown1"><i class="material-icons">account_circle</i></a></li>
             </ul>

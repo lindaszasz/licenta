@@ -24,18 +24,17 @@ public class HomeController {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
 		if(user.getActive() == 2) {
-			 modelAndView = new ModelAndView("index");
+			modelAndView = new ModelAndView("index");
 		}
 		else
-		{
+		{ 
 			 modelAndView = new ModelAndView("admin/index");
 		}
-			
+		
 		//modelAndView.addObject("userName", "Welcome " + user.getName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
 		//modelAndView.addObject("adminMessage","Content Available Only for Users with Admin Role");
 		//modelAndView.setViewName("admin/home");
-		return modelAndView;
-		
+		return modelAndView;	
 	}
 
 }

@@ -58,6 +58,16 @@
 					<input name="nrChildrens" type="text" id="nrChildrens" placeholder="No. of Childrens" th:value="${accomodation.nrChildrens}" />
 				</div>
 			</div>
+			<div class="row">
+			    <div class="col s12">
+                    <div class="input-field">
+                        <select th:field="${accomodation.service.id}" id="service.id">
+                            <option th:each="service : ${services}" th:value="${service.id}" th:text="${service.name}"></option>
+                        </select>
+                        <label for="service.id">Service</label>
+                    </div>
+                </div>
+            </div>
 		    <div class="row">
                 <div class="input-field col s12">
                    <label for="priceAccomodation">Price Accommodation</label>
