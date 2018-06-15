@@ -1,5 +1,7 @@
 package unitbv.licenta.hotel.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import unitbv.licenta.hotel.algorithm.GreedyAlgorithm;
 import unitbv.licenta.hotel.models.Accomodation;
 import unitbv.licenta.hotel.models.BookingRequestForm;
 import unitbv.licenta.hotel.models.Room;
@@ -228,4 +231,31 @@ public class AccomodationController {
 		
 		return "redirect:/accomodations/user";
 	}
+	
+	@RequestMapping(path = "/accepted", method = RequestMethod.GET)
+    public String selectReservations() {
+				
+		Iterable<BookingRequestForm> bookingRequests = null;
+		bookingRequests = bookingRequestRepository.findAll();
+		GreedyAlgorithm greedy = new GreedyAlgorithm();
+		List<Accomodation> acceptedReservations = greedy.selectBestOption(bookingRequests);
+		
+		for(Accomodation accomodation : acceptedReservations) {
+			Accomodation ac = new Accomodation();
+			ac.setId(accomodation.getId());
+			ac.setUser(accomodation.getUser());
+			ac.setRoom(accomodation.getRoom());
+			ac.setCheckIn(accomodation.getCheckIn());
+			ac.setCheckOut(accomodation.getCheckOut());
+			ac.setNrAdults(accomodation.getNrAdults());
+			ac.setNrChildrens(accomodation.getNrChildrens());
+			ac.setService(accomodation.getService());
+			ac.setPriceAccomodation(accomodation.getPriceAccomodation());
+			accomodationRepository.save(ac);
+		}
+		
+		return "redirect:/accomodations";
+	}	
+
+		
 }

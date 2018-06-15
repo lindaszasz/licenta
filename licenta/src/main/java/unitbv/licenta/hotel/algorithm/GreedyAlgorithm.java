@@ -1,36 +1,58 @@
 package unitbv.licenta.hotel.algorithm;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
+
+import unitbv.licenta.hotel.models.Accomodation;
+import unitbv.licenta.hotel.models.BookingRequestForm;
 
 public class GreedyAlgorithm {
 
-	public void selectBestOption(){
-		
-		Scanner sc = new Scanner(System.in);
+	public List<Accomodation> selectBestOption(Iterable<BookingRequestForm> bookingRequests) {
 
-		System.out.print("n=");
-		int n = sc.nextInt();
+		Scanner sc = new Scanner(System.in);
+		int n = 0;
+
+		Iterator<BookingRequestForm> it = bookingRequests.iterator();
+		while (it.hasNext()) {
+			n++;
+			it.next();
+		}
 
 		String s[] = new String[n];
 		String t[] = new String[n];
 		int o[] = new int[n];
+
+		Long id[] = new Long[n];
+		Long user[] = new Long[n];
+		Long room[] = new Long[n];
+		int nrAdults[] = new int[n];
+		int nrChildrens[] = new int[n];
+		Long service[] = new Long[n];
+
 		int howManyDays[] = new int[n];
 		double amount[] = new double[n];
 		double income = 0;
 
-		System.out.println("Timpurile rezervarilor:");
-		for (int i = 0; i <= n - 1; i++) {
-			System.out.print("Data sosirii a rezervarii " + i + ":");
-			s[i] = sc.next();
-			System.out.print("Data plecarii a rezervarii " + i + ":");
-			t[i] = sc.next();
-			System.out.print("Pret rezervarii " + i + ":");
-			amount[i] = sc.nextDouble();
+		int i = 0;
+		for (BookingRequestForm bq : bookingRequests) {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM, yyyy", Locale.ENGLISH);
+			s[i] = LocalDate.parse(bq.getCheckIn(), formatter).toString();
+			t[i] = LocalDate.parse(bq.getCheckOut(), formatter).toString();
+			amount[i] = bq.getPriceAccomodation();
 			o[i] = i;
+
+			id[i] = bq.getId();
+			user[i] = bq.getUser().getId();
+			room[i] = bq.getRoom().getId();
+			nrAdults[i] = bq.getNrAdults();
+			nrChildrens[i] = bq.getNrChildrens();
+			service[i] = bq.getService().getId();
 
 			int days = 0;
 			String sourceDate = s[i];
@@ -41,32 +63,53 @@ public class GreedyAlgorithm {
 
 			howManyDays[i] = days;
 			System.out.println();
+			i++;
 		}
 
-		quicksort(t, s, o, amount, howManyDays, 0, n - 1);
+		quicksort(t, s, o, amount, id, user, room, nrAdults, nrChildrens, service, howManyDays, 0, n - 1);
 
 		int j = 0;
 		int k = 0;
 		String verifyCheckIn[] = new String[n];
 		String verifyCheckOut[] = new String[n];
 		List<String> finalReservations = new ArrayList<String>();
-		// int finalReservations[] = new int[n];
 
-		// System.out.print("Rezervarea " + o[0]);
+		List<Accomodation> acceptedReservations = new ArrayList<Accomodation>();
+		Accomodation accomodation = new Accomodation();
+		accomodation.setId(id[0]);
+		for (BookingRequestForm bookingRequest : bookingRequests) {
+			if (bookingRequest.getUser().getId() == id[0]) {
+				accomodation.setUser(bookingRequest.getUser());
+			}
+
+			if (bookingRequest.getRoom().getId() == room[0]) {
+				accomodation.setRoom(bookingRequest.getRoom());
+			}
+
+			if (bookingRequest.getService().getId() == service[0]) {
+				accomodation.setService(bookingRequest.getService());
+			}
+		}
+		accomodation.setCheckIn(s[0]);
+		accomodation.setCheckOut(t[0]);
+		accomodation.setNrAdults(nrAdults[0]);
+		accomodation.setNrChildrens(nrChildrens[0]);
+		accomodation.setPriceAccomodation(amount[0]);
+
+		acceptedReservations.add(accomodation);
+
 		finalReservations.add("Rezervarea " + o[0]);
 		income += amount[0];
 		verifyCheckIn[0] = s[0];
 		verifyCheckOut[0] = t[0];
 
-		// finalReservations[0] = o[0];
-
 		boolean ok;
-		for (int i = 1; i <= n - 1; i++) {
-			if (t[i].compareTo(s[j]) <= 0 || s[i].compareTo(t[j]) >= 0) {
+		for (int a = 1; a <= n - 1; a++) {
+			if (t[a].compareTo(s[j]) <= 0 || s[a].compareTo(t[j]) >= 0) {
 				ok = true;
 				for (int index = 0; index < verifyCheckIn.length; index++) {
 					if (verifyCheckIn[index] != null) {
-						if (s[i].compareTo(verifyCheckIn[index]) > 0 && t[i].compareTo(verifyCheckOut[index]) < 0) {
+						if (s[a].compareTo(verifyCheckIn[index]) > 0 && t[a].compareTo(verifyCheckOut[index]) < 0) {
 							ok = false;
 						}
 					} else
@@ -75,58 +118,69 @@ public class GreedyAlgorithm {
 
 				if (ok) {
 					k++;
-					verifyCheckIn[k] = s[i];
-					verifyCheckOut[k] = t[i];
-					income += amount[i];
-					finalReservations.add("Rezervarea " + o[i]);
-					// finalReservations[k] = o[i];
+					verifyCheckIn[k] = s[a];
+					verifyCheckOut[k] = t[a];
+					income += amount[a];
+					Accomodation anotherAccomodation = new Accomodation();
+					anotherAccomodation.setId(id[a]);
+					for (BookingRequestForm bookingRequest : bookingRequests) {
+						if (bookingRequest.getUser().getId() == id[a]) {
+							anotherAccomodation.setUser(bookingRequest.getUser());
+						}
 
-					// if (k != 1) {
-					// k++;
-					// verifyCheckIn[k] = s[i];
-					// verifyCheckOut[k] = t[i];
-					// income += amount[i];
-					// finalReservations[k] = o[i];
-					// } else {
-					// verifyCheckIn[k] = s[i];
-					// verifyCheckOut[k] = t[i];
-					// income += amount[i];
-					// k++;
-					// finalReservations[--k] = o[i];
-					// System.out.println(k);
-					// }
+						if (bookingRequest.getRoom().getId() == room[a]) {
+							anotherAccomodation.setRoom(bookingRequest.getRoom());
+						}
+
+						if (bookingRequest.getService().getId() == service[a]) {
+							anotherAccomodation.setService(bookingRequest.getService());
+						}
+					}
+					anotherAccomodation.setCheckIn(s[a]);
+					anotherAccomodation.setCheckOut(t[a]);
+					anotherAccomodation.setNrAdults(nrAdults[a]);
+					anotherAccomodation.setNrChildrens(nrChildrens[a]);
+					anotherAccomodation.setPriceAccomodation(amount[a]);
+					acceptedReservations.add(anotherAccomodation);
+					finalReservations.add("Rezervarea " + o[a]);
 				}
 
-				j = i;
+				j = a;
 			}
 		}
 
 		for (String reservation : finalReservations) {
 			System.out.println(reservation);
 		}
-		// for (int i = 1; i < finalReservations.length; i++) {
-		// System.out.print(" Rezervarea " + finalReservations[i]);
-		// }
 
 		System.out.println();
 		System.out.println("Income: " + income);
+
+		for (Accomodation acc : acceptedReservations) {
+			System.out.println(acc);
+		}
+		
+		return acceptedReservations;
 	}
 
-	public void quicksort(String t[], String s[], int o[], double amount[], int howManyDays[], int p, int u) {
+	public void quicksort(String t[], String s[], int o[], double amount[], Long[] id, Long[] user, Long[] room,
+			int nrAdults[], int nrChildrens[], Long[] service, int howManyDays[], int p, int u) {
 		if (p < u) {
-			int m = partitionare(t, s, o, amount, howManyDays, p, u);
-			quicksort(t, s, o, amount, howManyDays, p, m);
-			quicksort(t, s, o, amount, howManyDays, m + 1, u);
+			int m = partitionare(t, s, o, amount, id, user, room, nrAdults, nrChildrens, service, howManyDays, p, u);
+			quicksort(t, s, o, amount, id, user, room, nrAdults, nrChildrens, service, howManyDays, p, m);
+			quicksort(t, s, o, amount, id, user, room, nrAdults, nrChildrens, service, howManyDays, m + 1, u);
 		}
 	}
 
-	public int partitionare(String t[], String s[], int o[], double amount[], int howManyDays[], int p, int u) {
+	public int partitionare(String t[], String s[], int o[], double amount[], Long[] id, Long[] user, Long[] room,
+			int nrAdults[], int nrChildrens[], Long[] service, int howManyDays[], int p, int u) {
 		int piv = howManyDays[p];
 		int i = p;
 		int j = u;
 		String aux;
-		int aux2;
 		double aux1;
+		int aux2;
+		Long aux3;
 
 		while (i < j) {
 			while (howManyDays[i] > piv) {
@@ -153,6 +207,30 @@ public class GreedyAlgorithm {
 				aux1 = amount[i];
 				amount[i] = amount[j];
 				amount[j] = aux1;
+
+				aux3 = id[i];
+				id[i] = id[j];
+				id[j] = aux3;
+
+				aux3 = user[i];
+				user[i] = user[j];
+				user[j] = aux3;
+
+				aux3 = room[i];
+				room[i] = room[j];
+				room[j] = aux3;
+
+				aux2 = nrAdults[i];
+				nrAdults[i] = nrAdults[j];
+				nrAdults[j] = aux2;
+
+				aux2 = nrChildrens[i];
+				nrChildrens[i] = nrChildrens[j];
+				nrChildrens[j] = aux2;
+
+				aux3 = service[i];
+				service[i] = service[j];
+				service[j] = aux3;
 
 				aux2 = howManyDays[i];
 				howManyDays[i] = howManyDays[j];
