@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Scanner;
 
 import unitbv.licenta.hotel.models.Accomodation;
 import unitbv.licenta.hotel.models.BookingRequestForm;
@@ -15,7 +14,6 @@ public class GreedyAlgorithm {
 
 	public List<Accomodation> selectBestOption(Iterable<BookingRequestForm> bookingRequests) {
 
-		Scanner sc = new Scanner(System.in);
 		int n = 0;
 
 		Iterator<BookingRequestForm> it = bookingRequests.iterator();
@@ -41,9 +39,13 @@ public class GreedyAlgorithm {
 
 		int i = 0;
 		for (BookingRequestForm bq : bookingRequests) {
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM, yyyy", Locale.ENGLISH);
+
+			DateTimeFormatter formatter = verifyDateFormat(bq.getCheckIn().charAt(1));
+			DateTimeFormatter formatter2 = verifyDateFormat(bq.getCheckOut().charAt(1));
+
 			s[i] = LocalDate.parse(bq.getCheckIn(), formatter).toString();
-			t[i] = LocalDate.parse(bq.getCheckOut(), formatter).toString();
+			t[i] = LocalDate.parse(bq.getCheckOut(), formatter2).toString();
+			
 			amount[i] = bq.getPriceAccomodation();
 			o[i] = i;
 
@@ -78,7 +80,7 @@ public class GreedyAlgorithm {
 		Accomodation accomodation = new Accomodation();
 		accomodation.setId(id[0]);
 		for (BookingRequestForm bookingRequest : bookingRequests) {
-			if (bookingRequest.getUser().getId() == id[0]) {
+			if (bookingRequest.getUser().getId() == user[0]) {
 				accomodation.setUser(bookingRequest.getUser());
 			}
 
@@ -124,7 +126,7 @@ public class GreedyAlgorithm {
 					Accomodation anotherAccomodation = new Accomodation();
 					anotherAccomodation.setId(id[a]);
 					for (BookingRequestForm bookingRequest : bookingRequests) {
-						if (bookingRequest.getUser().getId() == id[a]) {
+						if (bookingRequest.getUser().getId() == user[a]) {
 							anotherAccomodation.setUser(bookingRequest.getUser());
 						}
 
@@ -156,10 +158,10 @@ public class GreedyAlgorithm {
 		System.out.println();
 		System.out.println("Income: " + income);
 
-		for (Accomodation acc : acceptedReservations) {
-			System.out.println(acc);
-		}
-		
+		// for (Accomodation acc : acceptedReservations) {
+		// System.out.println(acc);
+		// }
+
 		return acceptedReservations;
 	}
 
@@ -245,6 +247,21 @@ public class GreedyAlgorithm {
 			return j--;
 
 		return j;
+	}
+
+	public DateTimeFormatter verifyDateFormat(Character character) {
+
+		DateTimeFormatter formatter;
+		int res;
+		res = character.compareTo(' ');
+		if (res == 0) {
+			formatter = DateTimeFormatter.ofPattern("d MMMM, yyyy", Locale.ENGLISH);
+		} else {
+			formatter = DateTimeFormatter.ofPattern("dd MMMM, yyyy", Locale.ENGLISH);
+		}
+
+		return formatter;
+
 	}
 
 }
