@@ -9,5 +9,6 @@ import unitbv.licenta.hotel.models.BookingRequestForm;
 public interface BookingRequestRepository extends CrudRepository<BookingRequestForm, Long>{
 	
 	Iterable<BookingRequestForm> getByUserId(long id);
+	Iterable<BookingRequestForm> getByRoomRoomType(String roomType);
 
 }

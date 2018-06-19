@@ -8,9 +8,20 @@
 <div th:replace="admin/header-for-accomodations :: header('a')"></div>
 
 <main role="main" class="container">
-    <div th:replace="fragments/title :: title('List of accepted reservations', '/accomodations', 'user.id')"></div>
-
+<br/>
+    <div th:replace="admin/title :: title('Prestige Suite: Confirmed Reservations', '/accomodations/prestige', 'user.id')"></div>
+    
     <div class="row">
+        <a href="/accomodations/accepted/reservations/prestige" class="waves-effect waves-light btn green" >
+            Optimize Reservations
+        </a>
+<!--       <button id='submit-btn' name="Optimize Reservations" class="btn waves-effect waves-light submit green"  href="/accomodations/presitge" type="button" name="action"> -->
+    
+    </div>
+    
+    <br/>
+    <div class="row">
+
         <table class="responsive-table">
             <thead>
             <tr>
@@ -48,11 +59,7 @@
             </tbody>
         </table>
     </div>
-    <div class="row">
-        <a th:href="'/accomodations/show'" class="waves-effect waves-light btn green">
-            <i class="material-icons left">add_circle</i>New accommodation
-        </a>
-    </div>
+    
 </main>
 
 <div th:replace="fragments/footer :: footer"></div>

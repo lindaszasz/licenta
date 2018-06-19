@@ -1,0 +1,19 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<div class="row" th:fragment="title (title, action, field)" style="padding-top: 20px;">
+    <h4 class="col s12 m8" th:text="${title}"></h4>
+    <th:block th:if="${action != ''}">
+        <form class="col s12 m4" th:action="${action}">
+            <div class="row">
+                <div class="input-field col s10">
+                    <input th:name="${field}" type="text" id="search" th:placeholder="${field}"/>
+                </div>
+                <div class="input-field col s2">
+                    <button type="submit" class="btn-floating btn-small waves-effect waves-light blue darken-2">
+                        <i class="material-icons left">search</i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </th:block>
+</div>
+</html>

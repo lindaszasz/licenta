@@ -1,5 +1,6 @@
 package unitbv.licenta.hotel.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +14,18 @@ import org.springframework.web.servlet.ModelAndView;
 
 import unitbv.licenta.hotel.algorithm.GreedyAlgorithm;
 import unitbv.licenta.hotel.models.Accomodation;
+import unitbv.licenta.hotel.models.AccomodationDeluxe;
+import unitbv.licenta.hotel.models.AccomodationGolden;
+import unitbv.licenta.hotel.models.AccomodationJunior;
+import unitbv.licenta.hotel.models.AccomodationPrestige;
 import unitbv.licenta.hotel.models.BookingRequestForm;
 import unitbv.licenta.hotel.models.Room;
 import unitbv.licenta.hotel.models.Service;
 import unitbv.licenta.hotel.models.User;
+import unitbv.licenta.hotel.repositories.AccomodationDeluxeRepository;
+import unitbv.licenta.hotel.repositories.AccomodationGoldenRepository;
+import unitbv.licenta.hotel.repositories.AccomodationJuniorRepository;
+import unitbv.licenta.hotel.repositories.AccomodationPrestigeRepository;
 import unitbv.licenta.hotel.repositories.AccomodationRepository;
 import unitbv.licenta.hotel.repositories.BookingRequestRepository;
 import unitbv.licenta.hotel.repositories.RoomRepository;
@@ -36,13 +45,25 @@ public class AccomodationController {
 
 	@Autowired
 	private RoomRepository roomRepository;
-	
+
 	@Autowired
 	private ServiceRepository serviceRepository;
-	
+
 	@Autowired
 	private BookingRequestRepository bookingRequestRepository;
-	
+
+	@Autowired
+	private AccomodationPrestigeRepository prestigeRepository;
+
+	@Autowired
+	private AccomodationDeluxeRepository deluxeRepository;
+
+	@Autowired
+	private AccomodationJuniorRepository juniorRepository;
+
+	@Autowired
+	private AccomodationGoldenRepository goldenRepository;
+
 	@Autowired
 	private UserService userService;
 
@@ -99,11 +120,10 @@ public class AccomodationController {
 	}
 
 	@RequestMapping(path = "/update", method = RequestMethod.GET)
-	public String updateAccomodation(@RequestParam(value = "id") long id,
-			@RequestParam(value = "user.id") long idUser, @RequestParam(value = "room.id") long idRoom,
-			@RequestParam(value = "checkIn") String checkIn, @RequestParam(value = "checkOut") String checkOut,
-			@RequestParam(value = "nrAdults") int nrAdults, @RequestParam(value = "nrChildrens") int nrChildrens,
-			@RequestParam(value = "service.id") long idService,
+	public String updateAccomodation(@RequestParam(value = "id") long id, @RequestParam(value = "user.id") long idUser,
+			@RequestParam(value = "room.id") long idRoom, @RequestParam(value = "checkIn") String checkIn,
+			@RequestParam(value = "checkOut") String checkOut, @RequestParam(value = "nrAdults") int nrAdults,
+			@RequestParam(value = "nrChildrens") int nrChildrens, @RequestParam(value = "service.id") long idService,
 			@RequestParam(value = "priceAccomodation") double priceAccomodation) {
 
 		Accomodation accomodation = accomodationRepository.findOne(id);
@@ -133,27 +153,28 @@ public class AccomodationController {
 		// return "Reservation was deleted";
 
 	}
-	
+
 	@RequestMapping(path = "/requests")
 	public ModelAndView getBookingRequests(@RequestParam(required = false) String name) {
-		
+
 		Iterable<User> users = userRepository.getByLastNameOrFirstName(name, name);
 
 		Iterable<BookingRequestForm> bookingRequests = null;
-		
+
 		if (name != null && name != "") {
-			for(User user : users) {
-			bookingRequests = bookingRequestRepository.getByUserId(user.getId());
+			for (User user : users) {
+				bookingRequests = bookingRequestRepository.getByUserId(user.getId());
 			}
 		} else {
 			bookingRequests = bookingRequestRepository.findAll();
 		}
 		return new ModelAndView("admin/bookingRequests", "bookingRequests", bookingRequests);
 	}
-	
+
 	@RequestMapping(path = "/show/request")
 	public ModelAndView getBookingRequest(@RequestParam(value = "id", required = false) Long id) {
-		BookingRequestForm bookingRequestForm = id != null ? bookingRequestRepository.findOne(id) : new BookingRequestForm();
+		BookingRequestForm bookingRequestForm = id != null ? bookingRequestRepository.findOne(id)
+				: new BookingRequestForm();
 
 		ModelAndView modelAndView = new ModelAndView("booking-request-form");
 		modelAndView.addObject("bookingRequest", bookingRequestForm);
@@ -162,30 +183,29 @@ public class AccomodationController {
 		modelAndView.addObject("services", serviceRepository.findAll());
 		return modelAndView;
 	}
-	
+
 	@RequestMapping(path = "/user")
 	public ModelAndView getUserBookingRequestsAndAccommodations() {
-		
+
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
-		
+
 		ModelAndView modelAndView = new ModelAndView("user-requests-accomodations");
 		modelAndView.addObject("bookingRequests", bookingRequestRepository.getByUserId(user.getId()));
 		modelAndView.addObject("accomodations", accomodationRepository.getByUserId(user.getId()));
-		
+
 		return modelAndView;
-	
 
 	}
-	
+
 	@RequestMapping(path = "/request/add", method = RequestMethod.GET)
-    public String addBookingRequest(@RequestParam(value = "user.id") long idUser,
+	public String addBookingRequest(@RequestParam(value = "user.id") long idUser,
 			@RequestParam(value = "room.id") long idRoom, @RequestParam(value = "checkIn") String checkIn,
 			@RequestParam(value = "checkOut") String checkOut, @RequestParam(value = "nrAdults") int nrAdults,
 			@RequestParam(value = "nrChildrens", required = false) int nrChildrens,
 			@RequestParam(value = "service.id") long idService,
 			@RequestParam(value = "priceAccomodation", required = false) double priceAccomodation) {
-		
+
 		User user = userRepository.findOne(idUser);
 		Room room = roomRepository.findOne(idRoom);
 		Service service = serviceRepository.findOne(idService);
@@ -201,18 +221,19 @@ public class AccomodationController {
 		bookingRequestForm.setPriceAccomodation(priceAccomodation);
 
 		bookingRequestRepository.save(bookingRequestForm);
-		
+
 		return "redirect:/accomodations/user";
 	}
-	
+
 	@RequestMapping(path = "/request/update", method = RequestMethod.GET)
-    public String updateBookingRequest(@RequestParam(value = "id") long id, @RequestParam(value = "user.id") long idUser,
-			@RequestParam(value = "room.id") long idRoom, @RequestParam(value = "checkIn") String checkIn,
-			@RequestParam(value = "checkOut") String checkOut, @RequestParam(value = "nrAdults") int nrAdults,
+	public String updateBookingRequest(@RequestParam(value = "id") long id,
+			@RequestParam(value = "user.id") long idUser, @RequestParam(value = "room.id") long idRoom,
+			@RequestParam(value = "checkIn") String checkIn, @RequestParam(value = "checkOut") String checkOut,
+			@RequestParam(value = "nrAdults") int nrAdults,
 			@RequestParam(value = "nrChildrens", required = false) int nrChildrens,
 			@RequestParam(value = "service.id") long idService,
 			@RequestParam(value = "priceAccomodation", required = false) double priceAccomodation) {
-		
+
 		BookingRequestForm bookingRequestForm = bookingRequestRepository.findOne(id);
 		User user = userRepository.findOne(idUser);
 		Room room = roomRepository.findOne(idRoom);
@@ -228,19 +249,19 @@ public class AccomodationController {
 		bookingRequestForm.setPriceAccomodation(priceAccomodation);
 
 		bookingRequestRepository.save(bookingRequestForm);
-		
+
 		return "redirect:/accomodations/user";
 	}
-	
+
 	@RequestMapping(path = "/accepted", method = RequestMethod.GET)
-    public String selectReservations() {
-				
+	public String selectReservations() {
+
 		Iterable<BookingRequestForm> bookingRequests = null;
 		bookingRequests = bookingRequestRepository.findAll();
 		GreedyAlgorithm greedy = new GreedyAlgorithm();
 		List<Accomodation> acceptedReservations = greedy.selectBestOption(bookingRequests);
-		
-		for(Accomodation accomodation : acceptedReservations) {
+
+		for (Accomodation accomodation : acceptedReservations) {
 			Accomodation ac = new Accomodation();
 			ac.setId(accomodation.getId());
 			ac.setUser(accomodation.getUser());
@@ -253,9 +274,193 @@ public class AccomodationController {
 			ac.setPriceAccomodation(accomodation.getPriceAccomodation());
 			accomodationRepository.save(ac);
 		}
-		
-		return "redirect:/accomodations";
-	}	
 
-		
+		return "redirect:/accomodations";
+	}
+
+	@RequestMapping(path = "/accepted/reservations/prestige", method = RequestMethod.GET)
+	public String selectReservationsPrestige() {
+
+		Iterable<BookingRequestForm> bookingRequests = null;
+		bookingRequests = bookingRequestRepository.getByRoomRoomType("Prestige Suite");
+		GreedyAlgorithm greedy = new GreedyAlgorithm();
+		List<Accomodation> acceptedReservations = greedy.selectBestOption(bookingRequests);
+		if (acceptedReservations != null) {
+			for (Accomodation accomodation : acceptedReservations) {
+				AccomodationPrestige prestige = new AccomodationPrestige();
+				prestige.setId(accomodation.getId());
+				prestige.setUser(accomodation.getUser());
+				prestige.setRoom(accomodation.getRoom());
+				prestige.setCheckIn(accomodation.getCheckIn());
+				prestige.setCheckOut(accomodation.getCheckOut());
+				prestige.setNrAdults(accomodation.getNrAdults());
+				prestige.setNrChildrens(accomodation.getNrChildrens());
+				prestige.setService(accomodation.getService());
+				prestige.setPriceAccomodation(accomodation.getPriceAccomodation());
+				prestigeRepository.save(prestige);
+
+				Accomodation ac = new Accomodation();
+				ac.setId(accomodation.getId());
+				ac.setUser(accomodation.getUser());
+				ac.setRoom(accomodation.getRoom());
+				ac.setCheckIn(accomodation.getCheckIn());
+				ac.setCheckOut(accomodation.getCheckOut());
+				ac.setNrAdults(accomodation.getNrAdults());
+				ac.setNrChildrens(accomodation.getNrChildrens());
+				ac.setService(accomodation.getService());
+				ac.setPriceAccomodation(accomodation.getPriceAccomodation());
+				accomodationRepository.save(ac);
+
+			}
+
+			bookingRequestRepository.delete(bookingRequestRepository.getByRoomRoomType("Prestige Suite"));
+		}
+		return "redirect:/accomodations/prestige";
+	}
+
+	@RequestMapping(path = "/accepted/reservations/deluxe", method = RequestMethod.GET)
+	public String selectReservationsDeluxe() {
+
+		Iterable<BookingRequestForm> bookingRequests = null;
+		bookingRequests = bookingRequestRepository.getByRoomRoomType("Deluxe");
+		GreedyAlgorithm greedy = new GreedyAlgorithm();
+		List<Accomodation> acceptedReservations = greedy.selectBestOption(bookingRequests);
+		if (acceptedReservations != null) {
+			for (Accomodation accomodation : acceptedReservations) {
+				AccomodationDeluxe deluxe = new AccomodationDeluxe();
+				deluxe.setId(accomodation.getId());
+				deluxe.setUser(accomodation.getUser());
+				deluxe.setRoom(accomodation.getRoom());
+				deluxe.setCheckIn(accomodation.getCheckIn());
+				deluxe.setCheckOut(accomodation.getCheckOut());
+				deluxe.setNrAdults(accomodation.getNrAdults());
+				deluxe.setNrChildrens(accomodation.getNrChildrens());
+				deluxe.setService(accomodation.getService());
+				deluxe.setPriceAccomodation(accomodation.getPriceAccomodation());
+				deluxeRepository.save(deluxe);
+				
+				Accomodation ac = new Accomodation();
+				ac.setId(accomodation.getId());
+				ac.setUser(accomodation.getUser());
+				ac.setRoom(accomodation.getRoom());
+				ac.setCheckIn(accomodation.getCheckIn());
+				ac.setCheckOut(accomodation.getCheckOut());
+				ac.setNrAdults(accomodation.getNrAdults());
+				ac.setNrChildrens(accomodation.getNrChildrens());
+				ac.setService(accomodation.getService());
+				ac.setPriceAccomodation(accomodation.getPriceAccomodation());
+				accomodationRepository.save(ac);
+
+			}
+			
+			bookingRequestRepository.delete(bookingRequests);
+		}
+		return "redirect:/accomodations/deluxe";
+	}
+
+	@RequestMapping(path = "/accepted/reservations/junior", method = RequestMethod.GET)
+	public String selectReservationsJunior() {
+
+		Iterable<BookingRequestForm> bookingRequests = null;
+		bookingRequests = bookingRequestRepository.getByRoomRoomType("Junior Suite");
+		GreedyAlgorithm greedy = new GreedyAlgorithm();
+		List<Accomodation> acceptedReservations = greedy.selectBestOption(bookingRequests);
+		if (acceptedReservations != null) {
+
+			for (Accomodation accomodation : acceptedReservations) {
+				AccomodationJunior junior = new AccomodationJunior();
+				junior.setId(accomodation.getId());
+				junior.setUser(accomodation.getUser());
+				junior.setRoom(accomodation.getRoom());
+				junior.setCheckIn(accomodation.getCheckIn());
+				junior.setCheckOut(accomodation.getCheckOut());
+				junior.setNrAdults(accomodation.getNrAdults());
+				junior.setNrChildrens(accomodation.getNrChildrens());
+				junior.setService(accomodation.getService());
+				junior.setPriceAccomodation(accomodation.getPriceAccomodation());
+				juniorRepository.save(junior);
+
+				Accomodation ac = new Accomodation();
+				ac.setId(accomodation.getId());
+				ac.setUser(accomodation.getUser());
+				ac.setRoom(accomodation.getRoom());
+				ac.setCheckIn(accomodation.getCheckIn());
+				ac.setCheckOut(accomodation.getCheckOut());
+				ac.setNrAdults(accomodation.getNrAdults());
+				ac.setNrChildrens(accomodation.getNrChildrens());
+				ac.setService(accomodation.getService());
+				ac.setPriceAccomodation(accomodation.getPriceAccomodation());
+				accomodationRepository.save(ac);
+			}
+
+			bookingRequestRepository.delete(bookingRequests);
+		}
+
+		return "redirect:/accomodations/junior";
+	}
+
+	@RequestMapping(path = "/accepted/reservations/golden", method = RequestMethod.GET)
+	public String selectReservationsGolden() {
+
+		Iterable<BookingRequestForm> bookingRequests = null;
+		bookingRequests = bookingRequestRepository.getByRoomRoomType("Golden Suite");
+		GreedyAlgorithm greedy = new GreedyAlgorithm();
+		List<Accomodation> acceptedReservations = greedy.selectBestOption(bookingRequests);
+		if (acceptedReservations != null) {
+			for (Accomodation accomodation : acceptedReservations) {
+				AccomodationGolden golden = new AccomodationGolden();
+				golden.setId(accomodation.getId());
+				golden.setUser(accomodation.getUser());
+				golden.setRoom(accomodation.getRoom());
+				golden.setCheckIn(accomodation.getCheckIn());
+				golden.setCheckOut(accomodation.getCheckOut());
+				golden.setNrAdults(accomodation.getNrAdults());
+				golden.setNrChildrens(accomodation.getNrChildrens());
+				golden.setService(accomodation.getService());
+				golden.setPriceAccomodation(accomodation.getPriceAccomodation());
+				goldenRepository.save(golden);
+
+				Accomodation ac = new Accomodation();
+				ac.setId(accomodation.getId());
+				ac.setUser(accomodation.getUser());
+				ac.setRoom(accomodation.getRoom());
+				ac.setCheckIn(accomodation.getCheckIn());
+				ac.setCheckOut(accomodation.getCheckOut());
+				ac.setNrAdults(accomodation.getNrAdults());
+				ac.setNrChildrens(accomodation.getNrChildrens());
+				ac.setService(accomodation.getService());
+				ac.setPriceAccomodation(accomodation.getPriceAccomodation());
+				accomodationRepository.save(ac);
+			}
+
+			bookingRequestRepository.delete(bookingRequests);
+		}
+		return "redirect:/accomodations/golden";
+	}
+
+	@RequestMapping("/prestige")
+	public ModelAndView accomodationsPrestige() {
+		Iterable<AccomodationPrestige> accomodations = prestigeRepository.findAll();
+
+		return new ModelAndView("admin/accomodations-prestige", "accomodations", accomodations);
+	}
+
+	@RequestMapping("/deluxe")
+	public ModelAndView accomodationsDeluxe() {
+		Iterable<AccomodationDeluxe> accomodations = deluxeRepository.findAll();
+		return new ModelAndView("admin/accomodations-deluxe", "accomodations", accomodations);
+	}
+
+	@RequestMapping("/junior")
+	public ModelAndView accomodationsJunior() {
+		Iterable<AccomodationJunior> accomodations = juniorRepository.findAll();
+		return new ModelAndView("admin/accomodations-junior", "accomodations", accomodations);
+	}
+
+	@RequestMapping("/golden")
+	public ModelAndView accomodationsGolden() {
+		Iterable<AccomodationGolden> accomodations = goldenRepository.findAll();
+		return new ModelAndView("admin/accomodations-golden", "accomodations", accomodations);
+	}
+
 }

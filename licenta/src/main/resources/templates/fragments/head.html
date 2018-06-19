@@ -1,78 +1,86 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:fragment="head (title)">
 
-    <title th:text="'Four Seasons Hotel - ' + ${title}"></title>
+<title th:text="'Four Seasons Hotel - ' + ${title}"></title>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css"/>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css" />
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+	rel="stylesheet" />
 
-    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.5.6/picker.js"></script>
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.5.6/picker.js"></script>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <style>
-        body {
-            display: flex;
-            min-height: 100vh;
-            flex-direction: column;
-        }
+<style>
+body {
+	display: flex;
+	min-height: 100vh;
+	flex-direction: column;
+}
 
-        main {
-            flex: 1 0 auto;
-        }
-        
-        blockquote{
-          border-left: 5px solid #536dfe;
-        }
+main {
+	flex: 1 0 auto;
+}
 
-        .parallax-container {
-            min-height: 300px;
-            line-height: 0;
-            height: auto;
-            color: rgba(255,255,255,.9);
-        }
-        .parallax-container .section {
-            width: 100%;
-        }
+blockquote {
+	border-left: 5px solid #536dfe;
+}
 
-        @media only screen and (max-width : 992px) {
-            .parallax-container .section {
-                position: absolute;
-                top: 40%;
-            }
-            #index-banner .section {
-                top: 10%;
-            }
-        }
+  .tabs .indicator { display: none; } 
 
-        @media only screen and (max-width : 600px) {
-            #index-banner .section {
-                top: 0;
-            }
-        }
 
-        .icon-block {
-            padding: 0 15px;
-        }
-        .icon-block .material-icons {
-            font-size: inherit;
-        }
-        
-        .mininav{ 
-         float:left;
-         width:200px;
-         margin:1px ;
-         background-color: rgba(189, 236, 142, 0.64);
-       }
-       
-           
-        
-    </style>
 
-    <script>
+.parallax-container {
+	min-height: 300px;
+	line-height: 0;
+	height: auto;
+	color: rgba(255, 255, 255, .9);
+}
+
+.parallax-container .section {
+	width: 100%;
+}
+
+@media only screen and (max-width : 992px) {
+	.parallax-container .section {
+		position: absolute;
+		top: 40%;
+	}
+	#index-banner .section {
+		top: 10%;
+	}
+}
+
+@media only screen and (max-width : 600px) {
+	#index-banner .section {
+		top: 0;
+	}
+}
+
+.icon-block {
+	padding: 0 15px;
+}
+
+.icon-block .material-icons {
+	font-size: inherit;
+}
+
+.mininav {
+	float: left;
+	width: 200px;
+	margin: 1px;
+	background-color: rgba(189, 236, 142, 0.64);
+}
+</style>
+
+<script>
         // enable menu on mobile
         (function($){
             $(function(){
@@ -92,7 +100,14 @@
                 close: 'Ok',
                 closeOnSelect: false
             });
-
+            
+            $('#submit-btn').off().on('click', function(){
+                $('#submit-btn').addClass('disabled');
+            });
+            
+            
+            $('ul.tabs').tabs();
+            
             $('.parallax').parallax();
             $('.slider').slider();
             $('.carousel').carousel();
@@ -102,13 +117,11 @@
             function autoplay() {
               $('.carousel').carousel('next');
               setTimeout(autoplay, 4500);
-               }
-           
+               }    
             
         });
         
-       
-        
+    
        
     </script>
 

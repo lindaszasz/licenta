@@ -5,7 +5,7 @@
 <header th:fragment="header (active)">
    <ul id="dropdown1" class="dropdown-content">
               <li><a th:inline="text" href="#!">Logged user: <br/> [[${#httpServletRequest.remoteUser}]]</a></li>
-              <li><a href="'/clients/showForHeader?id=' + ${user.id}" >Account Info</a></li>
+              <li><a href="" >Account Info</a></li>
               <li th:class="divider"></li>
               <li><a th:href="@{/logout}">Sign Out</a></li>
     </ul>
@@ -33,9 +33,7 @@
                 <i class="material-icons">menu</i>
             </a>
         </div>
-<!--         <div class = "nav-content"> -->
-<!--         <p align = "right"><span th:inline="text">Logged user: [[${#httpServletRequest.remoteUser}]]! | <a th:href="@{/logout}"><u> Sign Out</u></a></span></p> -->
-<!--         </div>      -->
+
     </nav>
 </header>
 </body>

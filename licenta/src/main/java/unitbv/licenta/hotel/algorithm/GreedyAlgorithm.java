@@ -6,20 +6,28 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Scanner;
 
 import unitbv.licenta.hotel.models.Accomodation;
 import unitbv.licenta.hotel.models.BookingRequestForm;
 
 public class GreedyAlgorithm {
 
+	private List<Accomodation> acceptedReservations;
+
 	public List<Accomodation> selectBestOption(Iterable<BookingRequestForm> bookingRequests) {
 
+		Scanner sc = new Scanner(System.in);
 		int n = 0;
 
 		Iterator<BookingRequestForm> it = bookingRequests.iterator();
 		while (it.hasNext()) {
 			n++;
 			it.next();
+		}
+
+		if (n == 0) {
+			return acceptedReservations;
 		}
 
 		String s[] = new String[n];
@@ -45,7 +53,7 @@ public class GreedyAlgorithm {
 
 			s[i] = LocalDate.parse(bq.getCheckIn(), formatter).toString();
 			t[i] = LocalDate.parse(bq.getCheckOut(), formatter2).toString();
-			
+
 			amount[i] = bq.getPriceAccomodation();
 			o[i] = i;
 
@@ -76,7 +84,7 @@ public class GreedyAlgorithm {
 		String verifyCheckOut[] = new String[n];
 		List<String> finalReservations = new ArrayList<String>();
 
-		List<Accomodation> acceptedReservations = new ArrayList<Accomodation>();
+		acceptedReservations = new ArrayList<Accomodation>();
 		Accomodation accomodation = new Accomodation();
 		accomodation.setId(id[0]);
 		for (BookingRequestForm bookingRequest : bookingRequests) {
