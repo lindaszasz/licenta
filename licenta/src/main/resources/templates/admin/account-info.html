@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:replace="fragments/head :: head('Client')"></div>
+
+<body>
+
+<div th:replace="admin/headerAdmin :: header('c')"></div>
+
+<main role="main" class="container">
+   
+    <br/>
+    <h4 align="right">Account Informations</h4>
+    <br/>
+    <div class="row">
+        <form class="col s12" th:action="@{/clients/update/account}" method="get">
+            <div class="row">
+                <div class="input-field col s12">
+                    <label for="inputId">ID</label>
+                    <input name="id" type="text" id="inputId" th:value="${user.id}" readonly="readonly"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col m6 s12">
+                    <i class="material-icons prefix">account_circle</i>
+                    <label for="firstName">First Name</label>
+                    <input name="firstName" type="text" id="firstName" placeholder="First Name" th:value="${user.firstName}"/>
+                </div>
+                <div class="input-field col m6 s12">
+                    <label for="lastName">Last Name</label>
+                    <input name="lastName" type="text" id="lastName" placeholder="Last Name" th:value="${user.lastName}"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field input-group col m6 s12">
+                    <i class="fa fa-id-card prefix" style="font-size:25px;"></i>
+                    <label for="cnp">Personal ID Number</label>
+                    <input name="cnp" type="text" id="cnp" placeholder="CNP" th:value="${user.cnp}"/>
+                </div> 
+                  <div class="input-field col s12 m6">
+                    <i class="material-icons prefix">phone</i>
+                    <label for="phone">Phone</label>
+                    <input name="phone" type="text" id="phone" placeholder="Phone" th:value="${user.phone}"/>
+                </div>             
+            </div>
+            <div class="row">
+                <div class="input-field col s12 m6">
+                    <i class="material-icons prefix">email</i>
+                    <label for="email">Email</label>
+                    <input name="email" type="text" id="email" placeholder="Email" th:value="${user.email}"/>
+                </div>
+                  <div class="input-field col s12 m6">
+                    <i class="fa fa-unlock-alt prefix"></i>
+                    <label for="password">Password</label>
+                    <input name="password" type="text" id="password" placeholder="Password" th:value="${user.password}"/>
+                </div>
+            </div>
+            <div class="row">
+
+            </div>
+            <div class="row">
+                <div class="col m12">
+                    <button type="submit" class="btn"><i class="material-icons left">save</i>Save</button>
+                    <a href="/home" class="btn grey"><i class="material-icons left">cancel</i>Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</main>
+
+<div th:replace="fragments/footer :: footer"></div>
+
+</body>
+</html>
