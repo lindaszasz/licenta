@@ -21,10 +21,12 @@
             <div class="row">
                 <div class="col m6 s12">
                     <div class="input-field">
-                    <select th:field="${bookingRequest.user.id}" id="user.id">
-                            <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.firstName + ' ' + user.lastName}"></option>
-                        </select>
-                   <label for="user.id">Client</label>
+                    <label for="user.id">Client</label>
+                    <input name="user" type="text" id="user.id" th:value="${user.firstName + ' ' + user.lastName}" readonly="readonly"/>
+<!--                     <select th:field="${bookingRequest.user.id}" id="user.id"> -->
+<!--                             <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.firstName + ' ' + user.lastName}"></option> -->
+<!--                         </select> -->
+<!--                    <label for="user.id">Client</label> -->
 <!--                     Prima incercare -->
 <!--                     <select th:field="${bookingRequest.user.id}" id="user.id"> -->
 <!--                             <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.firstName + ' ' + user.lastName}" th:selected="${user.email} eq [[${#httpServletRequest.remoteUser}]]" ></option> -->

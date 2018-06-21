@@ -25,7 +25,7 @@ public class SmtpMailSender {
 		//multipart message
 		helper.setSubject(subject);
 		helper.setTo(to);
-		helper.setText(body, true); //true indicates html
+		helper.setText(body, false); //true indicates html
 		// helper object is for functionalites : adding attachments etc etc;
 		
 		javaMailSender.send(message);
