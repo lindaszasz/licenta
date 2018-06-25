@@ -166,10 +166,6 @@ public class GreedyAlgorithm {
 		System.out.println();
 		System.out.println("Income: " + income);
 
-		// for (Accomodation acc : acceptedReservations) {
-		// System.out.println(acc);
-		// }
-
 		return acceptedReservations;
 	}
 

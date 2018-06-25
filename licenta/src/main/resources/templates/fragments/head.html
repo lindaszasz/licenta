@@ -95,10 +95,35 @@ blockquote {
             $('.datepicker').pickadate({
                 selectMonths: true,
                 selectYears: 15,
+                min: new Date(),
                 today: 'Today',
                 clear: 'Clear',
                 close: 'Ok',
-                closeOnSelect: false
+                closeOnSelect: false,
+                onSet: function (ele) {
+                    if(ele.select){
+                           this.close();
+                    }
+
+                     var d1 = $('#checkIn').val();
+                     var d2 = $('#checkOut').val();
+
+                     var date1 = new Date(d1);
+                     var date2 = new Date(d2);
+
+                    var date1_ms = date1.getTime();
+                    var date2_ms = date2.getTime();
+                    
+
+                     if((date2_ms -date1_ms ) <= 0 )
+                     {
+                       alert('End date cannot be a previous date!');
+                       $('#checkOut').val('');
+                                          
+                     }
+
+                 }
+
             });
             
             $('#submit-btn').off().on('click', function(){

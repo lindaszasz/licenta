@@ -5,92 +5,94 @@
 
 <body>
 
-<div th:replace="fragments/header :: header('r')"></div>
+	<div th:replace="fragments/header :: header('r')"></div>
 
-<main role="main" class="container">
-    <div th:replace="fragments/title :: title('Accommodation Request', '', '')"></div>
+	<main role="main" class="container">
+	<div
+		th:replace="fragments/title :: title('Accommodation Request', '', '')"></div>
 
-    <div class="row">
-        <form class="col s12" th:action="${bookingRequest.id == 0 ? '/accomodations/request/add' : '/accomodations/request/update'} " method="get">
-            <div class="row">
-                <div class="input-field col s12">
-                    <label for="inputId">ID</label>
-                    <input name="id" type="text" id="inputId" th:value="${bookingRequest.id}" readonly="readonly"/>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col m6 s12">
-                    <div class="input-field">
-                    <label for="user.id">Client</label>
-                    <input name="user" type="text" id="user.id" th:value="${user.firstName + ' ' + user.lastName}" readonly="readonly"/>
-<!--                     <select th:field="${bookingRequest.user.id}" id="user.id"> -->
-<!--                             <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.firstName + ' ' + user.lastName}"></option> -->
-<!--                         </select> -->
-<!--                    <label for="user.id">Client</label> -->
-<!--                     Prima incercare -->
-<!--                     <select th:field="${bookingRequest.user.id}" id="user.id"> -->
-<!--                             <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.firstName + ' ' + user.lastName}" th:selected="${user.email} eq [[${#httpServletRequest.remoteUser}]]" ></option> -->
-<!--                     </select> -->
-<!--                         <label for="user.id">Client</label> -->
-<!--                         A doua incercare -->
-<!--                         <label for="user.id">Client</label> -->
-<!--                         <input name="user" type="text" id="user.id" th:value="${bookingRequest.id}" readonly="readonly"/>     -->
-                    </div>
-                </div>
-                <div class="col m6 s12">
-                    <div class="input-field">
-                        <select th:field="${bookingRequest.room.id}" id="room.id">
-                            <option th:each="room : ${rooms}" th:value="${room.id}" th:text="${room.roomType + ' ' + room.priceNight}"></option>
-                        </select>
-                        <label for="room.id">Room</label>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="input-field col m6 s12">
-                    <label for="checkIn">Check in</label>
-                    <input name="checkIn" type="text" class="datepicker" id="checkIn" placeholder="Date" th:value="${bookingRequest.checkIn}"/>
-                </div>
-                 <div class="input-field col m6 s12">
-                    <label for="checkOut">Check out</label>
-                    <input name="checkOut" type="text" class="datepicker" id="checkOut" placeholder="Date" th:value="${bookingRequest.checkOut}"/>
-                </div>
-            </div>
+	<div class="row">
+		<form class="col s12"
+			th:action="${bookingRequest.id == 0 ? '/accomodations/request/add' : '/accomodations/request/update'} "
+			method="get">
 			<div class="row">
-				<div class="input-field col m6 s12">
-					<label for="nrAdults">No. of Adults</label> 
-					<input name="nrAdults" type="text" id="nrAdults" placeholder="No. of Adults" th:value="${bookingRequest.nrAdults}" />
-				</div>
-				<div class="input-field col m6 s12">
-					<label for="nrChildrens">No. of Children's</label> 
-					<input name="nrChildrens" type="text" id="nrChildrens" placeholder="No. of Childrens" th:value="${bookingRequest.nrChildrens}" />
+				<div class="input-field col s12">
+					<label for="inputId">ID</label> <input name="id" type="text"
+						id="inputId" th:value="${bookingRequest.id}" readonly="readonly" />
 				</div>
 			</div>
-			  <div class="row">
-                <div class="col m6 s12">
-                    <div class="input-field">
-                        <select th:field="${bookingRequest.service.id}" id="service.id">
-                            <option th:each="service : ${services}" th:value="${service.id}" th:text="${service.name}"></option>
-                        </select>
-                        <label for="service.id">Service</label>
-                    </div>
-                </div>
-                <div class="input-field col m6 s12">
-                   <label for="priceAccomodation">Price Accommodation</label>
-                   <input name="priceAccomodation" type="text" id="priceAccomodation" placeholder="Price Accommodation" th:value="${bookingRequest.priceAccomodation}"/>
-                </div>
-            </div>
 			<div class="row">
-                <div class="col s12">
-                   <button type="submit" class="btn"><i class="material-icons left">save</i>Save</button>
-                    <a href="/accomodations/user" class="btn grey"><i class="material-icons left">cancel</i>Cancel</a>
-                </div>
-            </div>
-        </form>
-    </div>
-</main>
+				<div class="col m6 s12">
+					<div class="input-field">
+						<label for="user.id">Client</label> <input name="user" type="text"
+							id="user.id" th:value="${user.firstName + ' ' + user.lastName}"
+							readonly="readonly" />
+					</div>
+				</div>
+				<div class="col m6 s12">
+					<div class="input-field">
+						<select th:field="${bookingRequest.room.id}" id="room.id">
+							<option th:each="room : ${rooms}" th:value="${room.id}"
+								th:text="${room.roomType + ' ' + room.priceNight}"></option>
+						</select> <label for="room.id">Room</label>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="input-field col m6 s12">
+					<label for="checkIn">Check in</label> <input name="checkIn"
+						type="text" class="datepicker" id="checkIn" placeholder="Date"
+						th:value="${bookingRequest.checkIn}" />
+				</div>
+				<div class="input-field col m6 s12">
+					<label for="checkOut">Check out</label> <input name="checkOut"
+						type="text" class="datepicker" id="checkOut" placeholder="Date"
+						th:value="${bookingRequest.checkOut}" />
+				</div>
+			</div>
+			<div class="row">
+				<div class="input-field col m6 s12">
+					<label for="nrAdults">No. of Adults</label> <input name="nrAdults"
+						type="text" id="nrAdults" placeholder="No. of Adults"
+						th:value="${bookingRequest.nrAdults}" />
+				</div>
+				<div class="input-field col m6 s12">
+					<label for="nrChildrens">No. of Children's</label> <input
+						name="nrChildrens" type="text" id="nrChildrens"
+						placeholder="No. of Childrens"
+						th:value="${bookingRequest.nrChildrens}" />
+				</div>
+			</div>
+			<div class="row">
+				<div class="col m6 s12">
+					<div class="input-field">
+						<select th:field="${bookingRequest.service.id}" id="service.id">
+							<option th:each="service : ${services}" th:value="${service.id}"
+								th:text="${service.name}"></option>
+						</select> <label for="service.id">Service</label>
+					</div>
+				</div>
+				<div class="input-field col m6 s12">
+					<label for="priceAccomodation">Price Accommodation</label> <input
+						name="priceAccomodation" type="text" id="priceAccomodation"
+						placeholder="Price Accommodation"
+						th:value="${bookingRequest.priceAccomodation}" readonly="readonly"/>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col s12">
+					<button type="submit" class="btn">
+						<i class="material-icons left">save</i>Save
+					</button>
+					<a href="/accomodations/user" class="btn grey"><i
+						class="material-icons left">cancel</i>Cancel</a>
+				</div>
+			</div>
+		</form>
+	</div>
+	</main>
 
-<div th:replace="fragments/footer :: footer"></div>
+	<div th:replace="fragments/footer :: footer"></div>
 
 </body>
 </html>

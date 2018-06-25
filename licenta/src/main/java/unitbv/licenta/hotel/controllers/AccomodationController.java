@@ -39,6 +39,7 @@ import unitbv.licenta.hotel.repositories.BookingRequestRepository;
 import unitbv.licenta.hotel.repositories.RoomRepository;
 import unitbv.licenta.hotel.repositories.ServiceRepository;
 import unitbv.licenta.hotel.repositories.UserRepository;
+import unitbv.licenta.hotel.service.RequestService;
 import unitbv.licenta.hotel.service.UserService;
 
 @Controller
@@ -126,6 +127,9 @@ public class AccomodationController {
 		accomodation.setNrAdults(nrAdults);
 		accomodation.setNrChildrens(nrChildrens);
 		accomodation.setService(service);
+
+		RequestService requestService = new RequestService();
+		priceAccomodation = requestService.calculatePrice(checkIn, checkOut, room.getPriceNight());
 		accomodation.setPriceAccomodation(priceAccomodation);
 
 		accomodationRepository.save(accomodation);
@@ -153,6 +157,9 @@ public class AccomodationController {
 		accomodation.setNrAdults(nrAdults);
 		accomodation.setNrChildrens(nrChildrens);
 		accomodation.setService(service);
+
+		RequestService requestService = new RequestService();
+		priceAccomodation = requestService.calculatePrice(checkIn, checkOut, room.getPriceNight());
 		accomodation.setPriceAccomodation(priceAccomodation);
 
 		accomodationRepository.save(accomodation);
@@ -193,7 +200,7 @@ public class AccomodationController {
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
-		
+
 		ModelAndView modelAndView = new ModelAndView("booking-request-form");
 		modelAndView.addObject("bookingRequest", bookingRequestForm);
 		modelAndView.addObject("user", user);
@@ -236,6 +243,9 @@ public class AccomodationController {
 		bookingRequestForm.setNrAdults(nrAdults);
 		bookingRequestForm.setNrChildrens(nrChildrens);
 		bookingRequestForm.setService(service);
+
+		RequestService requestService = new RequestService();
+		priceAccomodation = requestService.calculatePrice(checkIn, checkOut, room.getPriceNight());
 		bookingRequestForm.setPriceAccomodation(priceAccomodation);
 
 		bookingRequestRepository.save(bookingRequestForm);
@@ -264,6 +274,9 @@ public class AccomodationController {
 		bookingRequestForm.setNrAdults(nrAdults);
 		bookingRequestForm.setNrChildrens(nrChildrens);
 		bookingRequestForm.setService(service);
+
+		RequestService requestService = new RequestService();
+		priceAccomodation = requestService.calculatePrice(checkIn, checkOut, room.getPriceNight());
 		bookingRequestForm.setPriceAccomodation(priceAccomodation);
 
 		bookingRequestRepository.save(bookingRequestForm);
@@ -304,6 +317,8 @@ public class AccomodationController {
 		GreedyAlgorithm greedy = new GreedyAlgorithm();
 		List<Accomodation> acceptedReservations = greedy.selectBestOption(bookingRequests);
 		if (acceptedReservations != null) {
+
+			Iterable<AccomodationPrestige> acceptedInPastAccommodations = prestigeRepository.findAll();
 			for (Accomodation accomodation : acceptedReservations) {
 				AccomodationPrestige prestige = new AccomodationPrestige();
 				prestige.setId(accomodation.getId());
@@ -315,13 +330,17 @@ public class AccomodationController {
 				prestige.setNrChildrens(accomodation.getNrChildrens());
 				prestige.setService(accomodation.getService());
 				prestige.setPriceAccomodation(accomodation.getPriceAccomodation());
-				prestigeRepository.save(prestige);
 
-				smtpMailSender.send(prestige.getUser().getEmail(), "Accomodation request for Prestige Suite",
-						"Dear " + prestige.getUser().getFirstName() + "," + System.lineSeparator() + System.lineSeparator()
-								+ "Your reservation between " + prestige.getCheckIn() + " and " + prestige.getCheckOut()
-								+ " was ACCEPTED." + System.lineSeparator()  + System.lineSeparator() + "Best regards," + System.lineSeparator()
-								+ "Four Seasons Hotel Team");
+				boolean ok = true;
+				if (acceptedInPastAccommodations != null) {
+					for (AccomodationPrestige acceptedPrestige : acceptedInPastAccommodations) {
+						if (prestige.getCheckIn().compareTo(acceptedPrestige.getCheckIn()) >= 0
+								&& prestige.getCheckOut().compareTo(acceptedPrestige.getCheckOut()) <= 0) {
+							ok = false;
+							break;
+						}
+					}
+				}
 
 				Accomodation ac = new Accomodation();
 				ac.setId(accomodation.getId());
@@ -333,12 +352,23 @@ public class AccomodationController {
 				ac.setNrChildrens(accomodation.getNrChildrens());
 				ac.setService(accomodation.getService());
 				ac.setPriceAccomodation(accomodation.getPriceAccomodation());
-				accomodationRepository.save(ac);
+
+				if (ok) {
+					prestigeRepository.save(prestige);
+					accomodationRepository.save(ac);
+
+					smtpMailSender.send(prestige.getUser().getEmail(), "Accomodation request for Prestige Suite",
+							"Dear " + prestige.getUser().getFirstName() + "," + System.lineSeparator()
+									+ System.lineSeparator() + "Your reservation between " + prestige.getCheckIn()
+									+ " and " + prestige.getCheckOut() + " was ACCEPTED." + System.lineSeparator()
+									+ System.lineSeparator() + "Best regards," + System.lineSeparator()
+									+ "Four Seasons Hotel Team");
+				}
 
 			}
 
 			String checkIn, checkOut;
-				
+
 			for (BookingRequestForm request : bookingRequests) {
 				formatter = verifyDateFormat(request.getCheckIn().charAt(1));
 				formatter2 = verifyDateFormat(request.getCheckOut().charAt(1));
@@ -349,18 +379,18 @@ public class AccomodationController {
 							&& checkOut.compareTo(accomodation.getCheckOut()) == 0) {
 						bookingRequestRepository.delete(request);
 					}
-					
+
 				}
 			}
-			
-			
+
 			Iterable<BookingRequestForm> notAcceptedReservations = bookingRequestRepository.findAll();
 			for (BookingRequestForm request : notAcceptedReservations) {
 				smtpMailSender.send(request.getUser().getEmail(), "Accomodation request for Prestige Suite",
-						"Dear " + request.getUser().getFirstName() + "," + System.lineSeparator() + System.lineSeparator()
-								+ "Unfortunetly, your reservation between " + request.getCheckIn() + " and "
-								+ request.getCheckOut() + " was NOT accepted." + System.lineSeparator() + System.lineSeparator()
-								+ "Best regards," + System.lineSeparator() + "Four Seasons Hotel Team");
+						"Dear " + request.getUser().getFirstName() + "," + System.lineSeparator()
+								+ System.lineSeparator() + "Unfortunetly, your reservation between "
+								+ request.getCheckIn() + " and " + request.getCheckOut() + " was NOT accepted."
+								+ System.lineSeparator() + System.lineSeparator() + "Best regards,"
+								+ System.lineSeparator() + "Four Seasons Hotel Team");
 			}
 
 			bookingRequestRepository.delete(bookingRequestRepository.getByRoomRoomType("Prestige Suite"));
@@ -376,6 +406,7 @@ public class AccomodationController {
 		GreedyAlgorithm greedy = new GreedyAlgorithm();
 		List<Accomodation> acceptedReservations = greedy.selectBestOption(bookingRequests);
 		if (acceptedReservations != null) {
+			Iterable<AccomodationDeluxe> acceptedInPastAccommodations = deluxeRepository.findAll();
 			for (Accomodation accomodation : acceptedReservations) {
 				AccomodationDeluxe deluxe = new AccomodationDeluxe();
 				deluxe.setId(accomodation.getId());
@@ -387,13 +418,16 @@ public class AccomodationController {
 				deluxe.setNrChildrens(accomodation.getNrChildrens());
 				deluxe.setService(accomodation.getService());
 				deluxe.setPriceAccomodation(accomodation.getPriceAccomodation());
-				deluxeRepository.save(deluxe);
-
-				smtpMailSender.send(deluxe.getUser().getEmail(), "Accomodation request for Deluxe",
-						"Dear " + deluxe.getUser().getFirstName() + "," + System.lineSeparator() + System.lineSeparator()
-								+ "Your reservation between " + deluxe.getCheckIn() + " and " + deluxe.getCheckOut()
-								+ " was ACCEPTED." + System.lineSeparator() + System.lineSeparator() + "Best regards," + System.lineSeparator()
-								+ "Four Seasons Hotel Team");
+				boolean ok = true;
+				if (acceptedInPastAccommodations != null) {
+					for (AccomodationDeluxe acceptedDeluxe : acceptedInPastAccommodations) {
+						if (deluxe.getCheckIn().compareTo(acceptedDeluxe.getCheckIn()) >= 0
+								&& deluxe.getCheckOut().compareTo(acceptedDeluxe.getCheckOut()) <= 0) {
+							ok = false;
+							break;
+						}
+					}
+				}
 
 				Accomodation ac = new Accomodation();
 				ac.setId(accomodation.getId());
@@ -405,13 +439,22 @@ public class AccomodationController {
 				ac.setNrChildrens(accomodation.getNrChildrens());
 				ac.setService(accomodation.getService());
 				ac.setPriceAccomodation(accomodation.getPriceAccomodation());
-				accomodationRepository.save(ac);
+				if (ok) {
+					deluxeRepository.save(deluxe);
+					accomodationRepository.save(ac);
+
+					smtpMailSender.send(deluxe.getUser().getEmail(), "Accomodation request for Deluxe",
+							"Dear " + deluxe.getUser().getFirstName() + "," + System.lineSeparator()
+									+ System.lineSeparator() + "Your reservation between " + deluxe.getCheckIn()
+									+ " and " + deluxe.getCheckOut() + " was ACCEPTED." + System.lineSeparator()
+									+ System.lineSeparator() + "Best regards," + System.lineSeparator()
+									+ "Four Seasons Hotel Team");
+				}
 
 			}
 
 			String checkIn, checkOut;
-			
-		
+
 			for (BookingRequestForm request : bookingRequests) {
 				formatter = verifyDateFormat(request.getCheckIn().charAt(1));
 				formatter2 = verifyDateFormat(request.getCheckOut().charAt(1));
@@ -422,17 +465,18 @@ public class AccomodationController {
 							&& checkOut.compareTo(accomodation.getCheckOut()) == 0) {
 						bookingRequestRepository.delete(request);
 					}
-					
+
 				}
 			}
 			Iterable<BookingRequestForm> notAcceptedReservations = bookingRequestRepository.findAll();
-			
+
 			for (BookingRequestForm request : notAcceptedReservations) {
 				smtpMailSender.send(request.getUser().getEmail(), "Accomodation request for Deluxe",
-						"Dear " + request.getUser().getFirstName() + "," + System.lineSeparator() + System.lineSeparator()
-								+ "Unfortunetly, your reservation between " + request.getCheckIn() + " and "
-								+ request.getCheckOut() + " was NOT accepted." + System.lineSeparator() + System.lineSeparator()
-								+ "Best regards," + System.lineSeparator() + "Four Seasons Hotel Team");
+						"Dear " + request.getUser().getFirstName() + "," + System.lineSeparator()
+								+ System.lineSeparator() + "Unfortunetly, your reservation between "
+								+ request.getCheckIn() + " and " + request.getCheckOut() + " was NOT accepted."
+								+ System.lineSeparator() + System.lineSeparator() + "Best regards,"
+								+ System.lineSeparator() + "Four Seasons Hotel Team");
 			}
 
 			bookingRequestRepository.delete(bookingRequests);
@@ -448,7 +492,7 @@ public class AccomodationController {
 		GreedyAlgorithm greedy = new GreedyAlgorithm();
 		List<Accomodation> acceptedReservations = greedy.selectBestOption(bookingRequests);
 		if (acceptedReservations != null) {
-
+			Iterable<AccomodationJunior> acceptedInPastAccommodations = juniorRepository.findAll();
 			for (Accomodation accomodation : acceptedReservations) {
 				AccomodationJunior junior = new AccomodationJunior();
 				junior.setId(accomodation.getId());
@@ -460,13 +504,16 @@ public class AccomodationController {
 				junior.setNrChildrens(accomodation.getNrChildrens());
 				junior.setService(accomodation.getService());
 				junior.setPriceAccomodation(accomodation.getPriceAccomodation());
-				juniorRepository.save(junior);
-
-				smtpMailSender.send(junior.getUser().getEmail(), "Accomodation request for Junior Suite",
-						"Dear " + junior.getUser().getFirstName() + "," + System.lineSeparator() + System.lineSeparator()
-								+ "Your reservation between " + junior.getCheckIn() + " and " + junior.getCheckOut()
-								+ " was ACCEPTED." + System.lineSeparator() + "Best regards," + System.lineSeparator()
-								+ "Four Seasons Hotel Team");
+				boolean ok = true;
+				if (acceptedInPastAccommodations != null) {
+					for (AccomodationJunior acceptedJunior : acceptedInPastAccommodations) {
+						if (junior.getCheckIn().compareTo(acceptedJunior.getCheckIn()) >= 0
+								&& junior.getCheckOut().compareTo(acceptedJunior.getCheckOut()) <= 0) {
+							ok = false;
+							break;
+						}
+					}
+				}
 
 				Accomodation ac = new Accomodation();
 				ac.setId(accomodation.getId());
@@ -478,12 +525,21 @@ public class AccomodationController {
 				ac.setNrChildrens(accomodation.getNrChildrens());
 				ac.setService(accomodation.getService());
 				ac.setPriceAccomodation(accomodation.getPriceAccomodation());
-				accomodationRepository.save(ac);
+				if (ok) {
+					accomodationRepository.save(ac);
+					juniorRepository.save(junior);
+
+					smtpMailSender.send(junior.getUser().getEmail(), "Accomodation request for Junior Suite",
+							"Dear " + junior.getUser().getFirstName() + "," + System.lineSeparator()
+									+ System.lineSeparator() + "Your reservation between " + junior.getCheckIn()
+									+ " and " + junior.getCheckOut() + " was ACCEPTED." + System.lineSeparator()
+									+ "Best regards," + System.lineSeparator() + "Four Seasons Hotel Team");
+
+				}
 			}
 
 			String checkIn, checkOut;
-			
-				
+
 			for (BookingRequestForm request : bookingRequests) {
 				formatter = verifyDateFormat(request.getCheckIn().charAt(1));
 				formatter2 = verifyDateFormat(request.getCheckOut().charAt(1));
@@ -494,18 +550,19 @@ public class AccomodationController {
 							&& checkOut.compareTo(accomodation.getCheckOut()) == 0) {
 						bookingRequestRepository.delete(request);
 					}
-					
+
 				}
 			}
 
 			Iterable<BookingRequestForm> notAcceptedReservations = bookingRequestRepository.findAll();
 			System.out.println(notAcceptedReservations);
-			for (BookingRequestForm request :notAcceptedReservations) {
+			for (BookingRequestForm request : notAcceptedReservations) {
 				smtpMailSender.send(request.getUser().getEmail(), "Accomodation request for Junior Suite",
-						"Dear " + request.getUser().getFirstName() + "," + System.lineSeparator() + System.lineSeparator()
-								+ "Unfortunetly, your reservation between " + request.getCheckIn() + " and "
-								+ request.getCheckOut() + " was NOT accepted." + System.lineSeparator() + System.lineSeparator()
-								+ "Best regards," + System.lineSeparator() + "Four Seasons Hotel Team");
+						"Dear " + request.getUser().getFirstName() + "," + System.lineSeparator()
+								+ System.lineSeparator() + "Unfortunetly, your reservation between "
+								+ request.getCheckIn() + " and " + request.getCheckOut() + " was NOT accepted."
+								+ System.lineSeparator() + System.lineSeparator() + "Best regards,"
+								+ System.lineSeparator() + "Four Seasons Hotel Team");
 			}
 
 			bookingRequestRepository.delete(bookingRequests);
@@ -522,6 +579,7 @@ public class AccomodationController {
 		GreedyAlgorithm greedy = new GreedyAlgorithm();
 		List<Accomodation> acceptedReservations = greedy.selectBestOption(bookingRequests);
 		if (acceptedReservations != null) {
+			Iterable<AccomodationGolden> acceptedInPastAccommodations = goldenRepository.findAll();
 			for (Accomodation accomodation : acceptedReservations) {
 				AccomodationGolden golden = new AccomodationGolden();
 				golden.setId(accomodation.getId());
@@ -533,13 +591,16 @@ public class AccomodationController {
 				golden.setNrChildrens(accomodation.getNrChildrens());
 				golden.setService(accomodation.getService());
 				golden.setPriceAccomodation(accomodation.getPriceAccomodation());
-				goldenRepository.save(golden);
-
-				smtpMailSender.send(golden.getUser().getEmail(), "Accomodation request for Golden Suite",
-						"Dear " + golden.getUser().getFirstName() + "," + System.lineSeparator() + System.lineSeparator()
-								+ "Your reservation between " + golden.getCheckIn() + " and " + golden.getCheckOut()
-								+ " was ACCEPTED." + System.lineSeparator() + System.lineSeparator() + "Best regards," + System.lineSeparator()
-								+ "Four Seasons Hotel Team");
+				boolean ok = true;
+				if (acceptedInPastAccommodations != null) {
+					for (AccomodationGolden acceptedGolden : acceptedInPastAccommodations) {
+						if (golden.getCheckIn().compareTo(acceptedGolden.getCheckIn()) >= 0
+								&& golden.getCheckOut().compareTo(acceptedGolden.getCheckOut()) <= 0) {
+							ok = false;
+							break;
+						}
+					}
+				}
 
 				Accomodation ac = new Accomodation();
 				ac.setId(accomodation.getId());
@@ -551,12 +612,21 @@ public class AccomodationController {
 				ac.setNrChildrens(accomodation.getNrChildrens());
 				ac.setService(accomodation.getService());
 				ac.setPriceAccomodation(accomodation.getPriceAccomodation());
-				accomodationRepository.save(ac);
+				if (ok) {
+					accomodationRepository.save(ac);
+					goldenRepository.save(golden);
+
+					smtpMailSender.send(golden.getUser().getEmail(), "Accomodation request for Golden Suite",
+							"Dear " + golden.getUser().getFirstName() + "," + System.lineSeparator()
+									+ System.lineSeparator() + "Your reservation between " + golden.getCheckIn()
+									+ " and " + golden.getCheckOut() + " was ACCEPTED." + System.lineSeparator()
+									+ System.lineSeparator() + "Best regards," + System.lineSeparator()
+									+ "Four Seasons Hotel Team");
+				}
 			}
 
 			String checkIn, checkOut;
-			
-				
+
 			for (BookingRequestForm request : bookingRequests) {
 				formatter = verifyDateFormat(request.getCheckIn().charAt(1));
 				formatter2 = verifyDateFormat(request.getCheckOut().charAt(1));
@@ -567,17 +637,18 @@ public class AccomodationController {
 							&& checkOut.compareTo(accomodation.getCheckOut()) == 0) {
 						bookingRequestRepository.delete(bookingRequests);
 					}
-					
+
 				}
 			}
-			
+
 			Iterable<BookingRequestForm> notAcceptedReservations = bookingRequestRepository.findAll();
 			for (BookingRequestForm request : notAcceptedReservations) {
 				smtpMailSender.send(request.getUser().getEmail(), "Accomodation request for Golden Suite",
-						"Dear " + request.getUser().getFirstName() + "," + System.lineSeparator() + System.lineSeparator()
-								+ "Unfortunetly, your reservation between " + request.getCheckIn() + " and "
-								+ request.getCheckOut() + " was NOT accepted." + System.lineSeparator() + System.lineSeparator()
-								+ "Best regards," + System.lineSeparator() + "Four Seasons Hotel Team");
+						"Dear " + request.getUser().getFirstName() + "," + System.lineSeparator()
+								+ System.lineSeparator() + "Unfortunetly, your reservation between "
+								+ request.getCheckIn() + " and " + request.getCheckOut() + " was NOT accepted."
+								+ System.lineSeparator() + System.lineSeparator() + "Best regards,"
+								+ System.lineSeparator() + "Four Seasons Hotel Team");
 			}
 
 			bookingRequestRepository.delete(bookingRequests);
